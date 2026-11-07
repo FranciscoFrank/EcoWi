@@ -1,4 +1,4 @@
-"""Renders the README mockups (docs/widgets_mock[.uk].svg/.png) and docs/logo_variants.png.
+"""Renders the README mockups (docs/widgets_mock[.uk].svg/.png), docs/logo_variants.png and docs/palette.png.
 
     python tools/docs/render_images.py
 
@@ -34,8 +34,9 @@ AC = "M8.5,2h2v5h-2z M13.5,2h2v5h-2z M6,8h12v4c0,3.31 -2.69,6 -6,6s-6,-2.69 -6,-
 DC = "M7,2h10v6h-10z M9,4h2v2h-2z M13,4h2v2h-2z M6,9h12v3.5c0,3.04 -2.46,5.5 -5.5,5.5h-1c-3.04,0 -5.5,-2.46 -5.5,-5.5z M11,18h2v4h-2z"
 BOLT = "M13.5,2L5,13.5h5.5L9.5,22L19,10h-5.5z"
 
-DARK = dict(bg="#15181D", text="#F3F5F7", text2="#98A2AE", track="#2B3038", high="#B4EE3C", med="#FFD23F", low="#FF9F43", crit="#FF5C5C")
-LIGHT = dict(bg="#F7F8F5", text="#13161A", text2="#5D6670", track="#E2E6DF", high="#4E9A16", med="#D99A00", low="#E36A00", crit="#D32F2F")
+# Widget palettes: same values as res/values/colors.xml (ew_w_*, ew_batt_*), see docs/BRAND.md
+DARK = dict(bg="#1F2328", text="#EEF1F4", text2="#9AA3AD", track="#343B43", high="#C9EE85", med="#FFD23F", low="#FF9F43", crit="#FF5C5C")
+LIGHT = dict(bg="#F6F8F3", text="#15181C", text2="#5D6670", track="#E1E6DC", high="#4C8A12", med="#C98F00", low="#E36A00", crit="#D32F2F")
 H = "Unbounded"
 B = "Manrope"
 
@@ -126,10 +127,10 @@ def mockup(T):
     W, HGT = 1760, 1180
     svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{HGT}" viewBox="0 0 {W} {HGT}">']
     svg.append('''<defs>
-    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1B2A4A"/><stop offset="0.55" stop-color="#3B2D5C"/><stop offset="1" stop-color="#0E3B3A"/></linearGradient>
-    <radialGradient id="blob1" cx="0.2" cy="0.25" r="0.5"><stop offset="0" stop-color="#2CF5D0" stop-opacity="0.35"/><stop offset="1" stop-color="#2CF5D0" stop-opacity="0"/></radialGradient>
-    <radialGradient id="blob2" cx="0.85" cy="0.8" r="0.55"><stop offset="0" stop-color="#FFD23F" stop-opacity="0.22"/><stop offset="1" stop-color="#FFD23F" stop-opacity="0"/></radialGradient>
-    <linearGradient id="lock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1A2E"/><stop offset="1" stop-color="#2A1E3F"/></linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A616A"/><stop offset="0.55" stop-color="#3A4048"/><stop offset="1" stop-color="#1F2328"/></linearGradient>
+    <radialGradient id="blob1" cx="0.2" cy="0.25" r="0.5"><stop offset="0" stop-color="#9EDC4E" stop-opacity="0.22"/><stop offset="1" stop-color="#9EDC4E" stop-opacity="0"/></radialGradient>
+    <radialGradient id="blob2" cx="0.85" cy="0.8" r="0.55"><stop offset="0" stop-color="#DCFB90" stop-opacity="0.10"/><stop offset="1" stop-color="#DCFB90" stop-opacity="0"/></radialGradient>
+    <linearGradient id="lock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C3239"/><stop offset="1" stop-color="#15181C"/></linearGradient>
     <clipPath id="ph1"><rect x="40" y="40" width="860" height="1060" rx="60"/></clipPath>
     <clipPath id="ph2"><rect x="960" y="40" width="760" height="1060" rx="60"/></clipPath>
     </defs>''')
@@ -169,7 +170,7 @@ def mockup(T):
                 + logo_icon(1022, y + 24, 60) + text(1102, y + 46, title, 22, "#F3F5F7", B, 700)
                 + text(1102, y + 78, body, 18, "#98A2AE", B, 600)
                 + f'<circle cx="1650" cy="{y + 30}" r="6" fill="{color}"/>')
-    svg.append(notif(620, T["n_port_title"], T["n_port_text"], "#2CF5D0"))
+    svg.append(notif(620, T["n_port_title"], T["n_port_text"], "#9EDC4E"))
     svg.append(notif(742, T["n_low_title"], T["n_low_text"], "#FF9F43"))
     # Now Bar
     svg.append('<rect x="1060" y="920" width="560" height="110" rx="55" fill="#101318" stroke="#2B3038" stroke-width="2"/>')
@@ -205,6 +206,38 @@ def logo_variants():
     sheet.save(os.path.join(DOCS, "logo_variants.png"))
 
 
+PALETTE = [
+    ("Brand", [("Glow", "#9EDC4E"), ("Tube", "#C9EE85"), ("Bolt", "#DCFB90"), ("Core", "#EBFEB3"),
+               ("Wall top", "#4A5057"), ("Wall bottom", "#1F2328")]),
+    ("Dark", [("Background", "#15181C"), ("Surface", "#1C2025"), ("Card", "#23282E"), ("Raised", "#2C3239"),
+              ("Line", "#343B43"), ("Muted", "#9AA3AD")]),
+    ("Light", [("Primary", "#4C7F12"), ("Secondary", "#6FA82A"), ("Container", "#E2F4C3"), ("Background", "#F4F6F1"),
+               ("Outline", "#D6DCD2"), ("Text", "#15181C")]),
+    ("States", [("Charged", "#C9EE85"), ("Medium", "#FFD23F"), ("Low", "#FF9F43"), ("Critical", "#FF5C5C"),
+                ("Notification", "#8CC63F")]),
+]
+
+
+def palette_sheet():
+    from PIL import Image, ImageDraw, ImageFont
+    fonts = os.path.join(ROOT, "app", "src", "main", "res", "font")
+    title = ImageFont.truetype(os.path.join(fonts, "unbounded_semibold.ttf"), 26)
+    label = ImageFont.truetype(os.path.join(fonts, "manrope_semibold.ttf"), 20)
+    code = ImageFont.truetype(os.path.join(fonts, "manrope_regular.ttf"), 18)
+    sw, gap, row_h = 150, 18, 230
+    sheet = Image.new("RGB", (60 + 6 * (sw + gap), 40 + len(PALETTE) * row_h), "#0B0D10")
+    dr = ImageDraw.Draw(sheet)
+    for r, (group, colours) in enumerate(PALETTE):
+        y = 30 + r * row_h
+        dr.text((30, y), group, font=title, fill="#EEF1F4")
+        for i, (name, hexv) in enumerate(colours):
+            x = 30 + i * (sw + gap)
+            dr.rounded_rectangle((x, y + 48, x + sw, y + 148), radius=22, fill=hexv, outline="#343B43", width=2)
+            dr.text((x + 4, y + 158), name, font=label, fill="#C9D1D9")
+            dr.text((x + 4, y + 184), hexv, font=code, fill="#9AA3AD")
+    sheet.save(os.path.join(DOCS, "palette.png"))
+
+
 if __name__ == "__main__":
     for lang, T in STRINGS.items():
         suffix = "" if lang == "en" else "." + lang
@@ -212,4 +245,5 @@ if __name__ == "__main__":
         open(svg_path, "w").write(mockup(T))
         subprocess.run(["rsvg-convert", "-w", "1760", svg_path, "-o", svg_path[:-4] + ".png"], check=True)
     logo_variants()
+    palette_sheet()
     print("ok")

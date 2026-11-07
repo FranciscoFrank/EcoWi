@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand: "Volt" — graphite + mint→lime + amber bolt -->
-    <color name="ew_brand">#FFC8F53B</color>
-    <color name="ew_mint">#FF2CF5D0</color>
-    <color name="ew_amber">#FFFFD23F</color>
-    <color name="ew_graphite">#FF0B0D10</color>
-    <color name="ew_app_bg">#FFF3F5F0</color>
+    <!-- Brand: "Neon", the palette of the logo. Mirrored in ui/theme/Theme.kt (Neon) and
+         tools/logo/render.py; see docs/BRAND.md before changing a value. -->
+    <color name="ew_neon_glow">#FF9EDC4E</color>
+    <color name="ew_neon_tube">#FFC9EE85</color>
+    <color name="ew_neon_bolt">#FFDCFB90</color>
+    <color name="ew_wall_top">#FF4A5057</color>
+    <color name="ew_wall_bottom">#FF1F2328</color>
+
+    <!-- Notification accent (small icon, app name): between glow and tube, readable on light and dark shades -->
+    <color name="ew_brand">#FF8CC63F</color>
+    <color name="ew_app_bg">#FFF4F6F1</color>
 
     <!-- Widget palette (non-dynamic), explicit light / dark (per-widget theme override) -->
-    <color name="ew_w_bg_light">#FFF7F8F5</color>
-    <color name="ew_w_text_light">#FF13161A</color>
+    <color name="ew_w_bg_light">#FFF6F8F3</color>
+    <color name="ew_w_text_light">#FF15181C</color>
     <color name="ew_w_text2_light">#FF5D6670</color>
-    <color name="ew_w_track_light">#FFE2E6DF</color>
-    <color name="ew_w_accent_light">#FF3F7A00</color>
+    <color name="ew_w_track_light">#FFE1E6DC</color>
+    <color name="ew_w_accent_light">#FF4C7F12</color>
 
-    <color name="ew_w_bg_dark">#FF15181D</color>
-    <color name="ew_w_text_dark">#FFF3F5F7</color>
-    <color name="ew_w_text2_dark">#FF98A2AE</color>
-    <color name="ew_w_track_dark">#FF2B3038</color>
-    <color name="ew_w_accent_dark">#FFC8F53B</color>
+    <color name="ew_w_bg_dark">@color/ew_wall_bottom</color>
+    <color name="ew_w_text_dark">#FFEEF1F4</color>
+    <color name="ew_w_text2_dark">#FF9AA3AD</color>
+    <color name="ew_w_track_dark">#FF343B43</color>
+    <color name="ew_w_accent_dark">@color/ew_neon_tube</color>
 
-    <color name="ew_batt_high_light">#FF4E9A16</color>
-    <color name="ew_batt_medium_light">#FFD99A00</color>
+    <!-- Battery bands: high = the neon tube; the rest are warning states -->
+    <color name="ew_batt_high_light">#FF4C8A12</color>
+    <color name="ew_batt_medium_light">#FFC98F00</color>
     <color name="ew_batt_low_light">#FFE36A00</color>
     <color name="ew_batt_critical_light">#FFD32F2F</color>
-    <color name="ew_batt_high_dark">#FFB4EE3C</color>
+    <color name="ew_batt_high_dark">@color/ew_neon_tube</color>
     <color name="ew_batt_medium_dark">#FFFFD23F</color>
     <color name="ew_batt_low_dark">#FFFF9F43</color>
     <color name="ew_batt_critical_dark">#FFFF5C5C</color>

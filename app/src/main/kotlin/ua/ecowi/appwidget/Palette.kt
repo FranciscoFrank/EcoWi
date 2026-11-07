@@ -29,7 +29,7 @@ data class Palette(
     }
 
     companion object {
-        /** EcoWi palette: graphite + volt green; or Material You neutrals when [dynamic]. */
+        /** EcoWi "Neon" palette (graphite + logo green, see docs/BRAND.md); or Material You neutrals when [dynamic]. */
         fun light(c: Context, dynamic: Boolean): Palette = if (dynamic && Build.VERSION.SDK_INT >= 31) {
             Palette(
                 bg = c.getColor(android.R.color.system_neutral1_50),

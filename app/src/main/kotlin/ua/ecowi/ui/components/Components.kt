@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ua.ecowi.core.BatteryBand
 import ua.ecowi.ui.theme.LocalEco
-import ua.ecowi.ui.theme.Volt
+import ua.ecowi.ui.theme.Neon
 
 @Composable
 fun bandColor(soc: Int?): Color {
@@ -128,7 +128,7 @@ fun ChargeGauge(
     val band = BatteryBand.of(soc)
     val eco = LocalEco.current
     val low = band == BatteryBand.LOW || band == BatteryBand.CRITICAL
-    val colors = if (low) listOf(bandColor(soc), bandColor(soc)) else listOf(Volt.Mint, if (eco.isDark) Volt.Lime else Color(0xFF6FB300))
+    val colors = if (low) listOf(bandColor(soc), bandColor(soc)) else if (eco.isDark) listOf(Neon.Glow, Neon.Bolt) else listOf(Neon.LeafLight, Neon.LeafDark)
     val track = MaterialTheme.colorScheme.surfaceVariant
     Box(modifier, contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {

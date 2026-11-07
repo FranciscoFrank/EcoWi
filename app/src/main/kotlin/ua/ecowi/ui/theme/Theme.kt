@@ -22,21 +22,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ua.ecowi.R
 
-/** "Volt": graphite surfaces, mint → lime energy gradient, amber for the bolt. */
-object Volt {
-    val Mint = Color(0xFF2CF5D0)
-    val Lime = Color(0xFFC8F53B)
+/**
+ * "Neon": the palette of the EcoWi logo, used everywhere (app, widgets, notifications, icon).
+ * Mirrored in res/values/colors.xml (widgets, notifications) and tools/logo/render.py (icon); see
+ * docs/BRAND.md when changing a value.
+ */
+object Neon {
+    // the neon tube of the logo
+    val Glow = Color(0xFF9EDC4E)
+    val Tube = Color(0xFFC9EE85)
+    val Bolt = Color(0xFFDCFB90)
+    val Core = Color(0xFFEBFEB3)
+
+    // the wall behind the tube (icon background) and the dark surfaces derived from it
+    val WallTop = Color(0xFF4A5057)
+    val WallBottom = Color(0xFF1F2328)
+    val Graphite0 = Color(0xFF15181C)
+    val Graphite1 = Color(0xFF1C2025)
+    val Graphite2 = Color(0xFF23282E)
+    val Graphite3 = Color(0xFF2C3239)
+    val Line = Color(0xFF343B43)
+    val Text = Color(0xFFEEF1F4)
+    val Muted = Color(0xFF9AA3AD)
+
+    // light theme counterparts (the tube colour is too pale on white)
+    val LeafDark = Color(0xFF4C7F12)
+    val LeafLight = Color(0xFF6FA82A)
+
+    // states (battery bands, warnings)
     val Amber = Color(0xFFFFD23F)
     val Orange = Color(0xFFFF9F43)
     val Red = Color(0xFFFF5C5C)
 
-    val Graphite0 = Color(0xFF0B0D10)
-    val Graphite1 = Color(0xFF12151A)
-    val Graphite2 = Color(0xFF1A1E24)
-    val Graphite3 = Color(0xFF242932)
-    val Line = Color(0xFF2A3038)
-
-    val energy = Brush.linearGradient(listOf(Mint, Lime))
+    val energy = Brush.linearGradient(listOf(Glow, Bolt))
 }
 
 /** Extra brand colours not covered by Material's ColorScheme. */
@@ -53,19 +71,31 @@ data class EcoColors(
 )
 
 val LocalEco = staticCompositionLocalOf {
-    EcoColors(Volt.Lime, Volt.Line, Color.Gray, Volt.Lime, Volt.Amber, Volt.Orange, Volt.Red, true)
+    EcoColors(Neon.Tube, Neon.Line, Neon.Muted, Neon.Tube, Neon.Amber, Neon.Orange, Neon.Red, true)
 }
 
-private val Unbounded = FontFamily(
+internal val Unbounded = FontFamily(
     Font(R.font.unbounded_semibold, FontWeight.SemiBold),
     Font(R.font.unbounded_extrabold, FontWeight.ExtraBold),
 )
 
-private val Manrope = FontFamily(
+internal val Manrope = FontFamily(
     Font(R.font.manrope_regular, FontWeight.Normal),
     Font(R.font.manrope_semibold, FontWeight.SemiBold),
     Font(R.font.manrope_bold, FontWeight.Bold),
 )
+
+/**
+ * Text styles of the home-screen widgets, mirrored from res/values/styles.xml (EW.Widget.*) so the in-app
+ * preview looks like the real widget: Unbounded for the percentage (the widgets draw it themselves, see
+ * appwidget/SocText.kt) and the system font for everything else, because launchers don't load app fonts.
+ */
+object WidgetType {
+    val soc = TextStyle(fontFamily = Unbounded, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
+    val caption = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 12.sp)
+    val loadValue = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Medium, fontSize = 16.sp)
+    val loadLabel = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 11.sp)
+}
 
 private val typography = Typography(
     displayLarge = TextStyle(fontFamily = Unbounded, fontWeight = FontWeight.ExtraBold, fontSize = 60.sp, letterSpacing = (-1.5).sp),
@@ -84,46 +114,46 @@ private val typography = Typography(
 )
 
 private val darkScheme: ColorScheme = darkColorScheme(
-    primary = Volt.Lime,
-    onPrimary = Volt.Graphite0,
-    primaryContainer = Color(0xFF2B3A08),
-    onPrimaryContainer = Volt.Lime,
-    secondary = Volt.Mint,
-    onSecondary = Volt.Graphite0,
-    tertiary = Volt.Amber,
-    onTertiary = Volt.Graphite0,
-    background = Volt.Graphite0,
-    onBackground = Color(0xFFEEF1F4),
-    surface = Volt.Graphite1,
-    onSurface = Color(0xFFEEF1F4),
-    surfaceVariant = Volt.Graphite2,
-    onSurfaceVariant = Color(0xFF9AA3AD),
-    surfaceContainer = Volt.Graphite1,
-    surfaceContainerHigh = Volt.Graphite2,
-    surfaceContainerHighest = Volt.Graphite3,
-    outline = Volt.Line,
-    outlineVariant = Color(0xFF20252C),
-    error = Volt.Red,
+    primary = Neon.Tube,
+    onPrimary = Neon.Graphite0,
+    primaryContainer = Color(0xFF2F3D1C),
+    onPrimaryContainer = Neon.Bolt,
+    secondary = Neon.Glow,
+    onSecondary = Neon.Graphite0,
+    tertiary = Neon.Amber,
+    onTertiary = Neon.Graphite0,
+    background = Neon.Graphite0,
+    onBackground = Neon.Text,
+    surface = Neon.Graphite1,
+    onSurface = Neon.Text,
+    surfaceVariant = Neon.Graphite2,
+    onSurfaceVariant = Neon.Muted,
+    surfaceContainer = Neon.Graphite1,
+    surfaceContainerHigh = Neon.Graphite2,
+    surfaceContainerHighest = Neon.Graphite3,
+    outline = Neon.Line,
+    outlineVariant = Color(0xFF262B31),
+    error = Neon.Red,
 )
 
 private val lightScheme: ColorScheme = lightColorScheme(
-    primary = Color(0xFF3F7A00),
+    primary = Neon.LeafDark,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFDDF6A8),
+    primaryContainer = Color(0xFFE2F4C3),
     onPrimaryContainer = Color(0xFF1C3300),
-    secondary = Color(0xFF00897B),
+    secondary = Neon.LeafLight,
     onSecondary = Color.White,
     tertiary = Color(0xFFB98800),
-    background = Color(0xFFF3F5F0),
-    onBackground = Color(0xFF12151A),
+    background = Color(0xFFF4F6F1),
+    onBackground = Neon.Graphite0,
     surface = Color.White,
-    onSurface = Color(0xFF12151A),
+    onSurface = Neon.Graphite0,
     surfaceVariant = Color(0xFFE9ECE5),
     onSurfaceVariant = Color(0xFF5D6670),
     surfaceContainer = Color.White,
     surfaceContainerHigh = Color(0xFFF0F2EC),
     surfaceContainerHighest = Color(0xFFE6E9E2),
-    outline = Color(0xFFD6DBD2),
+    outline = Color(0xFFD6DCD2),
     outlineVariant = Color(0xFFE4E8E0),
     error = Color(0xFFD32F2F),
 )
@@ -131,9 +161,9 @@ private val lightScheme: ColorScheme = lightColorScheme(
 @Composable
 fun EcoWiTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val eco = if (dark) {
-        EcoColors(Volt.Lime, Volt.Line, Color(0xFF9AA3AD), Volt.Lime, Volt.Amber, Volt.Orange, Volt.Red, true)
+        EcoColors(Neon.Tube, Neon.Line, Neon.Muted, Neon.Tube, Neon.Amber, Neon.Orange, Neon.Red, true)
     } else {
-        EcoColors(Color(0xFF3F7A00), Color(0xFFDCE1D8), Color(0xFF5D6670), Color(0xFF4E9A16), Color(0xFFD99A00), Color(0xFFE36A00), Color(0xFFD32F2F), false)
+        EcoColors(Neon.LeafDark, Color(0xFFDCE1D8), Color(0xFF5D6670), Color(0xFF4C8A12), Color(0xFFC98F00), Color(0xFFE36A00), Color(0xFFD32F2F), false)
     }
     CompositionLocalProvider(LocalEco provides eco) {
         MaterialTheme(

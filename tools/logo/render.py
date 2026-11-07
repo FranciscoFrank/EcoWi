@@ -14,7 +14,8 @@ OUT = os.path.join(ROOT, "build", "logo")
 os.makedirs(OUT, exist_ok=True)
 
 PALETTES = {
-    # matches the reference photo
+    # The app icon. These values are the brand palette shared with the app (docs/BRAND.md).
+    # "volt" and "ice" below are alternative logo palettes for docs only; the app doesn't use them.
     "neon": dict(tube="#C9EE85", core="#EBFEB3", glow="#9EDC4E", bolt="#DCFB90", bolt_core="#F3FFC8",
                  bg_top="#4A5057", bg_bottom="#1F2328", ambient="#8FD14F", label="Neon (matches the reference)"),
     "volt": dict(tube="#7CF2C8", core="#E6FFF6", glow="#2CF5D0", bolt="#FFD23F", bolt_core="#FFF2B8",
