@@ -2,6 +2,7 @@ package ua.ecowi.appwidget
 
 import android.content.Context
 import ua.ecowi.R
+import ua.ecowi.core.DurationParts
 import ua.ecowi.core.Port
 import java.util.Locale
 
@@ -15,10 +16,10 @@ object Format {
             context.getString(R.string.watts, watts)
         }
 
-    fun duration(context: Context, minutes: Int): String {
-        val h = minutes / 60
-        val m = minutes % 60
-        return if (h > 0) context.getString(R.string.duration_hm, h, m) else context.getString(R.string.duration_m, m)
+    fun duration(context: Context, minutes: Int): String = when (val d = DurationParts.of(minutes)) {
+        is DurationParts.Minutes -> context.getString(R.string.duration_m, d.minutes)
+        is DurationParts.HoursMinutes -> context.getString(R.string.duration_hm, d.hours, d.minutes)
+        is DurationParts.DaysHours -> context.getString(R.string.duration_dh, d.days, d.hours)
     }
 
     fun portName(context: Context, port: Port): String = context.getString(

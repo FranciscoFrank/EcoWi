@@ -7,23 +7,10 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <!-- Widget text (colours here are defaults; widgets re-colour at runtime) -->
-    <style name="EW.Widget.Soc" parent="">
-        <item name="android:textColor">@color/ew_w_text_auto</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:maxLines">1</item>
-    </style>
-
-    <style name="EW.Widget.Soc.Small">
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="EW.Widget.Soc.Large">
-        <item name="android:textSize">34sp</item>
-    </style>
-
+    <!-- Widget text (colours here are defaults; widgets re-colour at runtime).
+         Launchers don't load app fonts for widgets, so text uses the system font; the charge percentage is
+         drawn in Unbounded by the app instead (appwidget/SocText.kt). The in-app preview
+         (ui/theme/Theme.kt, WidgetType) mirrors these styles. -->
     <style name="EW.Widget.Caption" parent="">
         <item name="android:textColor">@color/ew_w_text2_auto</item>
         <item name="android:textSize">12sp</item>

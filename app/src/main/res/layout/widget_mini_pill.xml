@@ -43,14 +43,15 @@
                 android:visibility="gone" />
         </FrameLayout>
 
-        <TextView
-            android:id="@+id/soc_text"
-            style="@style/EW.Widget.Soc"
+        <ImageView
+            android:id="@+id/soc_img"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="@string/soc_unknown" />
+            android:layout_marginStart="10dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="yes"
+            android:scaleType="fitStart" />
 
         <include layout="@layout/part_load" />
     </LinearLayout>

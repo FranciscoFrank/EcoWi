@@ -16,6 +16,7 @@
     <string name="watts">%1$d W</string>
     <string name="kilowatts">%1$s kW</string>
     <string name="duration_hm">~%1$dh %2$dm</string>
+    <string name="duration_dh">~%1$dd %2$dh</string>
     <string name="duration_m">~%1$d min</string>
     <string name="caption_charging">+%1$s</string>
     <string name="caption_refreshing">Updating…</string>
@@ -27,7 +28,6 @@
     <string name="label_idle">idle</string>
     <string name="label_station">Station</string>
     <string name="label_phone">Phone</string>
-    <string name="preview_soc" formatted="false">78%</string>
     <string name="preview_caption">~6h 10m · 16:42</string>
     <string name="preview_load">245 W</string>
     <string name="preview_load_ac">AC · 245 W</string>

@@ -18,17 +18,23 @@ import ua.ecowi.core.LoadView
 /** Bindings shared by every widget layout (views missing in a layout are simply ignored). */
 internal object CommonBind {
 
-    fun bind(context: Context, rv: RemoteViews, m: WidgetModel, p: Painter, widgetId: Int, kind: Widgets.Kind) {
+    fun bind(context: Context, rv: RemoteViews, m: WidgetModel, p: Painter, widgetId: Int, kind: Widgets.Kind, socDp: Float) {
         p.background(R.id.bg)
 
-        rv.setTextViewText(R.id.soc_text, m.socText)
-        p.text(R.id.soc_text) { it.text }
+        soc(context, rv, p, R.id.soc_img, m.socText, socDp)
         rv.setViewVisibility(R.id.charge_icon, if (m.charging) View.VISIBLE else View.GONE)
         p.tint(R.id.charge_icon) { it.high }
         p.tint(R.id.divider) { it.track }
 
         bindLoad(context, rv, m, p)
         rv.setOnClickPendingIntent(android.R.id.background, Widgets.clickIntent(context, widgetId, m.needsSetup, kind))
+    }
+
+    /** The percentage in Unbounded (see [SocText]); tinted like text, read out by TalkBack. */
+    fun soc(context: Context, rv: RemoteViews, p: Painter, viewId: Int, text: String, sizeDp: Float) {
+        rv.setImageViewBitmap(viewId, SocText.bitmap(context, text, sizeDp))
+        rv.setContentDescription(viewId, text)
+        p.tint(viewId) { it.text }
     }
 
     fun caption(rv: RemoteViews, p: Painter, text: String?) {
@@ -93,16 +99,23 @@ internal object BarRenderer {
         Widgets.sized(
             manager, widgetId,
             listOf(
-                SizeF(110f, 40f) to { build(context, widgetId, R.layout.widget_compact, Caption.NONE, m) },
-                SizeF(230f, 40f) to { build(context, widgetId, R.layout.widget_row, Caption.SHORT, m) },
-                SizeF(230f, 150f) to { build(context, widgetId, R.layout.widget_tall, Caption.FULL, m) },
+                SizeF(110f, 40f) to { build(context, widgetId, R.layout.widget_compact, Caption.NONE, SocText.COMPACT, m) },
+                SizeF(230f, 40f) to { build(context, widgetId, R.layout.widget_row, Caption.SHORT, SocText.ROW, m) },
+                SizeF(230f, 150f) to { build(context, widgetId, R.layout.widget_tall, Caption.FULL, SocText.TALL, m) },
             ),
         )
 
-    private fun build(context: Context, widgetId: Int, layout: Int, caption: Caption, m: WidgetModel): RemoteViews {
+    private fun build(
+        context: Context,
+        widgetId: Int,
+        layout: Int,
+        caption: Caption,
+        socDp: Float,
+        m: WidgetModel,
+    ): RemoteViews {
         val rv = RemoteViews(context.packageName, layout)
         val p = Painter(context, rv, m.appearance)
-        CommonBind.bind(context, rv, m, p, widgetId, Widgets.Kind.BAR)
+        CommonBind.bind(context, rv, m, p, widgetId, Widgets.Kind.BAR, socDp)
         CommonBind.bar(rv, m, p)
         CommonBind.caption(
             rv, p,
@@ -123,9 +136,9 @@ internal object RingRenderer {
         Widgets.sized(
             manager, widgetId,
             listOf(
-                SizeF(40f, 40f) to { ring(context, widgetId, R.layout.widget_ring_small, m, Widgets.Kind.RING) },
-                SizeF(100f, 100f) to { ring(context, widgetId, R.layout.widget_ring, m, Widgets.Kind.RING) },
-                SizeF(220f, 100f) to { ring(context, widgetId, R.layout.widget_ring_duo, m, Widgets.Kind.RING) },
+                SizeF(40f, 40f) to { ring(context, manager, widgetId, R.layout.widget_ring_small, m, Widgets.Kind.RING) },
+                SizeF(100f, 100f) to { ring(context, manager, widgetId, R.layout.widget_ring, m, Widgets.Kind.RING) },
+                SizeF(220f, 100f) to { ring(context, manager, widgetId, R.layout.widget_ring_duo, m, Widgets.Kind.RING) },
             ),
         )
 
@@ -133,15 +146,28 @@ internal object RingRenderer {
         Widgets.sized(
             manager, widgetId,
             listOf(
-                SizeF(40f, 40f) to { ring(context, widgetId, R.layout.widget_ring_small, m, Widgets.Kind.MINI) },
-                SizeF(110f, 40f) to { ring(context, widgetId, R.layout.widget_mini_pill, m, Widgets.Kind.MINI) },
+                SizeF(40f, 40f) to { ring(context, manager, widgetId, R.layout.widget_ring_small, m, Widgets.Kind.MINI) },
+                SizeF(110f, 40f) to { ring(context, manager, widgetId, R.layout.widget_mini_pill, m, Widgets.Kind.MINI) },
             ),
         )
 
-    private fun ring(context: Context, widgetId: Int, layout: Int, m: WidgetModel, kind: Widgets.Kind): RemoteViews {
+    private fun ring(
+        context: Context,
+        manager: AppWidgetManager,
+        widgetId: Int,
+        layout: Int,
+        m: WidgetModel,
+        kind: Widgets.Kind,
+    ): RemoteViews {
         val rv = RemoteViews(context.packageName, layout)
         val p = Painter(context, rv, m.appearance)
-        CommonBind.bind(context, rv, m, p, widgetId, kind)
+        val socDp = when (layout) {
+            R.layout.widget_ring_small -> smallRingTextDp(manager, widgetId, m.socText)
+            R.layout.widget_ring_duo -> SocText.DUO
+            R.layout.widget_mini_pill -> SocText.PILL
+            else -> SocText.RING
+        }
+        CommonBind.bind(context, rv, m, p, widgetId, kind, socDp)
         CommonBind.caption(rv, p, m.captionShort)
 
         val thick = layout == R.layout.widget_ring_small || layout == R.layout.widget_mini_pill
@@ -158,14 +184,39 @@ internal object RingRenderer {
         rv.setImageViewBitmap(R.id.phone_ring_arc, RingBitmaps.ring(phone.percent / 100f, thick))
         p.tint(R.id.phone_ring_track) { it.track }
         p.tint(R.id.phone_ring_arc) { it.band(BatteryBand.of(phone.percent)) }
-        rv.setTextViewText(R.id.phone_soc_text, context.getString(R.string.soc_percent, phone.percent))
-        p.text(R.id.phone_soc_text) { it.text }
+        CommonBind.soc(context, rv, p, R.id.phone_soc_img, context.getString(R.string.soc_percent, phone.percent), SocText.DUO)
         rv.setViewVisibility(R.id.phone_charge_icon, if (phone.charging) View.VISIBLE else View.GONE)
         p.tint(R.id.phone_charge_icon) { it.high }
         listOf(R.id.station_label, R.id.phone_label).forEach { id -> p.text(id) { it.textSecondary } }
         return rv
     }
 }
+
+/**
+ * Text size (dp, so the system font scale can't push it out of the ring) for the 1×1 ring:
+ * ~80 % of the ring's inner diameter. The ring is the cell's shorter side minus 6dp margins, with a
+ * 13 % stroke (thick ring). Widths are Unbounded SemiBold advances in em ("100%" ≈ 3.61 em).
+ */
+internal fun smallRingTextDp(manager: AppWidgetManager, widgetId: Int, text: String): Float {
+    val o = manager.getAppWidgetOptions(widgetId)
+    val sides = listOf(
+        o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0),
+        o.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0),
+    ).filter { it > 0 }
+    val side = (sides.minOrNull() ?: 72).coerceIn(48, 120).toFloat()
+    val inner = (side - 12f) * (1f - 2 * 0.13f)
+    val em = textWidthEm(text)
+    return (inner * 0.8f / em).coerceIn(9f, 28f)
+}
+
+/** Advance of [text] in Unbounded SemiBold, in em (measured from the font file). */
+internal fun textWidthEm(text: String): Float =
+    text.sumOf { c -> GLYPH_EM[c] ?: 0.9 }.toFloat().coerceAtLeast(1f)
+
+private val GLYPH_EM = mapOf(
+    '0' to 0.917, '1' to 0.507, '2' to 0.823, '3' to 0.830, '4' to 0.846, '5' to 0.799,
+    '6' to 0.849, '7' to 0.740, '8' to 0.883, '9' to 0.849, '%' to 1.273, '—' to 1.193,
+)
 
 /**
  * Ring bitmaps are alpha masks (ALPHA_8, white = opaque) tinted per theme via setColorFilter,

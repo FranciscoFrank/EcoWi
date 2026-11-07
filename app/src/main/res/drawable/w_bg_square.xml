@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Square card for the round widgets: drawn with scaleType="fitCenter" so it stays square (and centred)
+     in any cell shape. White mask; colour and opacity are applied at runtime like w_bg_shape. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="100dp" android:viewportWidth="100" android:viewportHeight="100">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M30,0 H70 A30,30 0 0,1 100,30 V70 A30,30 0 0,1 70,100 H30 A30,30 0 0,1 0,70 V30 A30,30 0 0,1 30,0 Z" />
+</vector>

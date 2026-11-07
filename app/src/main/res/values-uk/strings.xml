@@ -17,6 +17,7 @@
     <string name="watts">%1$d Вт</string>
     <string name="kilowatts">%1$s кВт</string>
     <string name="duration_hm">~%1$d год %2$d хв</string>
+    <string name="duration_dh">~%1$d д %2$d год</string>
     <string name="duration_m">~%1$d хв</string>
     <string name="caption_charging">+%1$s</string>
     <string name="caption_refreshing">Оновлюю…</string>
@@ -28,7 +29,6 @@
     <string name="label_idle">простій</string>
     <string name="label_station">Станція</string>
     <string name="label_phone">Телефон</string>
-    <string name="preview_soc" formatted="false">78%</string>
     <string name="preview_caption">~6 год 10 хв · 16:42</string>
     <string name="preview_load">245 Вт</string>
     <string name="preview_load_ac">AC · 245 Вт</string>

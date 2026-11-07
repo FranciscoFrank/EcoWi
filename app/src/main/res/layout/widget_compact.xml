@@ -24,12 +24,13 @@
             android:src="@drawable/ic_bolt"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/soc_text"
-            style="@style/EW.Widget.Soc.Small"
+        <ImageView
+            android:id="@+id/soc_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/soc_unknown" />
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="yes"
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="0dp"

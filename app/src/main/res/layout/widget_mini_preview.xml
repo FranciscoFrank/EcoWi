@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Widget-picker preview of the 1×1 mini/ring: same geometry as widget_ring_small (square card, centred
+     ring). The picker renders previews without our code, so the text auto-sizes to the space instead. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,28 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:importantForAccessibility="no"
-        android:scaleType="fitXY"
-        android:src="@drawable/w_bg_shape"
+        android:scaleType="fitCenter"
+        android:src="@drawable/w_bg_square"
         android:tint="@color/ew_w_bg_dark" />
 
-    <FrameLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp">
+        android:layout_margin="6dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter"
+        android:src="@drawable/preview_ring" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:importantForAccessibility="no"
-            android:scaleType="fitCenter"
-            android:src="@drawable/preview_ring" />
-
-        <TextView
-            style="@style/EW.Widget.Soc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/preview_soc"
-            android:textColor="@color/ew_w_text_dark" />
-    </FrameLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="24dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter"
+        android:src="@drawable/preview_soc"
+        android:tint="@color/ew_w_text_dark" />
 </FrameLayout>

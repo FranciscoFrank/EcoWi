@@ -24,15 +24,19 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ua.ecowi.R
+import ua.ecowi.appwidget.textWidthEm
+import ua.ecowi.ui.theme.WidgetType
 import ua.ecowi.appwidget.Palette
 import ua.ecowi.core.BatteryBand
 import ua.ecowi.data.WidgetAppearance
 import ua.ecowi.data.WidgetTheme
 import ua.ecowi.ui.theme.LocalEco
+import ua.ecowi.ui.theme.Neon
 
 /**
  * In-app preview of how a widget will look with an appearance (theme, opacity, colours),
@@ -55,7 +59,8 @@ fun WidgetPreview(appearance: WidgetAppearance, soc: Int = 78, modifier: Modifie
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(
-                Brush.linearGradient(listOf(Color(0xFF3A2D5C), Color(0xFF145A63), Color(0xFF8A6A2E))),
+                // a neutral stand-in for the wallpaper, lit like the logo's wall
+                Brush.linearGradient(listOf(Neon.WallTop, Neon.WallBottom, Color(0xFF2E3A2A))),
             )
             .padding(18.dp),
     ) {
@@ -66,46 +71,62 @@ fun WidgetPreview(appearance: WidgetAppearance, soc: Int = 78, modifier: Modifie
                     .background(Color(p.bg).copy(alpha = alpha)).padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("$soc%", color = Color(p.text), fontSize = 22.sp, style = MaterialTheme.typography.titleLarge)
+                Text("$soc%", color = Color(p.text), style = WidgetType.soc, maxLines = 1)
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     Box(Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)).background(Color(p.track))) {
                         Box(Modifier.fillMaxWidth(soc / 100f).height(8.dp).clip(RoundedCornerShape(4.dp)).background(band))
                     }
                     Spacer(Modifier.height(5.dp))
-                    Text(stringResource(R.string.preview_caption), color = Color(p.textSecondary), fontSize = 12.sp)
+                    Text(stringResource(R.string.preview_caption), color = Color(p.textSecondary), style = WidgetType.caption, maxLines = 1)
                 }
                 Spacer(Modifier.width(12.dp))
                 EcoIcon(R.drawable.ic_ac, Color(p.accent), 20.dp)
                 Spacer(Modifier.width(6.dp))
                 Column {
-                    Text(stringResource(R.string.preview_load), color = Color(p.text), fontSize = 15.sp, style = MaterialTheme.typography.titleSmall)
-                    Text(stringResource(R.string.label_ac), color = Color(p.textSecondary), fontSize = 11.sp)
+                    Text(stringResource(R.string.preview_load), color = Color(p.text), style = WidgetType.loadValue, maxLines = 1)
+                    Text(stringResource(R.string.label_ac), color = Color(p.textSecondary), style = WidgetType.loadLabel, maxLines = 1)
                 }
             }
             // ring + mini
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                MiniRing(p, alpha, soc, 112)
-                MiniRing(p, alpha, soc, 64)
+                MiniRing(p, alpha, soc, 112, small = false)
+                MiniRing(p, alpha, soc, 80, small = true)
             }
         }
     }
 }
 
+/**
+ * Mirrors the ring widgets: [small] = the 1×1 (square card, 30 % corners, thick ring 6dp inside, text sized
+ * like [smallRingTextDp]); otherwise the 2×2 ring (thin ring, 22sp text).
+ */
 @Composable
-private fun MiniRing(p: Palette, alpha: Float, soc: Int, sizeDp: Int) {
+private fun MiniRing(p: Palette, alpha: Float, soc: Int, sizeDp: Int, small: Boolean) {
+    val text = "$soc%"
     Box(
-        Modifier.size(sizeDp.dp).clip(RoundedCornerShape(if (sizeDp > 80) 26.dp else 20.dp))
+        Modifier.size(sizeDp.dp).clip(if (small) RoundedCornerShape(30) else RoundedCornerShape(26.dp))
             .background(Color(p.bg).copy(alpha = alpha)),
         contentAlignment = Alignment.Center,
     ) {
         val band = Color(p.band(BatteryBand.of(soc)))
         val track = Color(p.track)
-        Canvas(Modifier.size((sizeDp * 0.78f).dp)) {
-            val sw = size.minDimension * if (sizeDp > 80) 0.085f else 0.13f
-            drawArc(track, 0f, 360f, false, style = Stroke(sw))
-            drawArc(band, -90f, 360f * soc / 100f, false, style = Stroke(sw, cap = StrokeCap.Round))
+        val ringDp = if (small) sizeDp - 12f else sizeDp * 0.78f
+        Canvas(Modifier.size(ringDp.dp)) {
+            val sw = size.minDimension * if (small) 0.13f else 0.085f
+            val inset = sw / 2
+            val arcSize = androidx.compose.ui.geometry.Size(size.width - sw, size.height - sw)
+            val topLeft = androidx.compose.ui.geometry.Offset(inset, inset)
+            drawArc(track, 0f, 360f, false, topLeft, arcSize, style = Stroke(sw))
+            drawArc(band, -90f, 360f * soc / 100f, false, topLeft, arcSize, style = Stroke(sw, cap = StrokeCap.Round))
         }
-        Text("$soc%", color = Color(p.text), fontSize = if (sizeDp > 80) 22.sp else 14.sp, style = MaterialTheme.typography.titleSmall)
+        val style = if (small) {
+            val inner = (sizeDp - 12f) * (1f - 2 * 0.13f)
+            val dp = (inner * 0.8f / textWidthEm(text)).coerceIn(9f, 28f)
+            WidgetType.soc.copy(fontSize = with(LocalDensity.current) { dp.dp.toSp() })
+        } else {
+            WidgetType.soc
+        }
+        Text(text, color = Color(p.text), style = style, maxLines = 1)
     }
 }

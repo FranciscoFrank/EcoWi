@@ -1,15 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 1×1 ring: just the charge. Also used by the lock-screen mini widget. -->
+<!-- 1×1 ring: just the charge. Also used by the lock-screen mini widget.
+     Card and ring are square and centred whatever the cell shape; the text size is set at runtime
+     from the cell size (RingRenderer) so the percentage always fits inside the ring. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/part_bg" />
+    <include layout="@layout/part_bg_square" />
 
-    <include
-        layout="@layout/part_ring"
+    <ImageView
+        android:id="@+id/ring_track"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp" />
+        android:layout_margin="6dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/ring_arc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="6dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/charge_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginBottom="1dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_bolt"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/soc_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="yes"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 </FrameLayout>
