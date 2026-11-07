@@ -17,6 +17,7 @@ __pycache__/
 # Signing keys never belong in git
 *.jks
 *.keystore
+*.jks.b64
 keystore.properties
 
 # GitHub Pages build output (python tools/site/build.py)
