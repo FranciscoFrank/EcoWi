@@ -19,6 +19,8 @@ data class EventConfig(
     val notifyChargingStarted: Boolean = true,
     val notifyGrid: Boolean = true,
     val notifyPorts: Boolean = true,
+    /** "Station isn't responding" / "back online" (see LinkDetector). */
+    val notifyLink: Boolean = true,
 )
 
 /**
