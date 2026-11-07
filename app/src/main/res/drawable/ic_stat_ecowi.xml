@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon: white only (the system tints it). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp" android:height="24dp" android:viewportWidth="100" android:viewportHeight="100">
+    <path android:pathData="M61.23,42.59 L54.45,23.49 A4.70,4.70 0 0,0 45.59,23.49 L32.49,60.37 A3.54,3.54 0 0,1 25.83,60.37 L12.54,22.94 A4.15,4.15 0 0,0 4.71,25.72 L22.16,74.88 A7.43,7.43 0 0,0 36.16,74.88 L43.24,54.94 A7.20,7.20 0 0,1 56.80,54.94 L57.82,57.82 A1.14,1.14 0 0,0 59.88,58.01 L65.64,48.29"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="4.60"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
+    <path android:pathData="M66.15,56.46 L67.54,60.37 A3.54,3.54 0 0,0 74.21,60.37 L87.50,22.94 A4.15,4.15 0 0,1 95.33,25.72 L77.88,74.88 A7.43,7.43 0 0,1 63.88,74.88 L60.47,65.27"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="4.60"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
+    <path android:pathData="M75.19,19.60 L63.79,36.32 L70.25,36.70 L62.74,50.57 L65.83,50.57 L77.85,32.71 L72.15,32.33 Z"
+        android:fillColor="#FFFFFFFF"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="1.60" android:strokeLineJoin="round" />
+</vector>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed-icon (monochrome) version. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M60.65,49.61 L56.64,38.30 A2.79,2.79 0 0,0 51.39,38.30 L43.63,60.14 A2.10,2.10 0 0,1 39.68,60.14 L31.81,37.97 A2.46,2.46 0 0,0 27.18,39.62 L37.51,68.74 A4.40,4.40 0 0,0 45.80,68.74 L50.00,56.93 A4.26,4.26 0 0,1 58.03,56.93 L58.63,58.63 A0.68,0.68 0 0,0 59.85,58.75 L63.26,52.99"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="1.97"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
+    <path android:pathData="M63.57,57.83 L64.39,60.14 A2.10,2.10 0 0,0 68.34,60.14 L76.21,37.97 A2.46,2.46 0 0,1 80.84,39.62 L70.51,68.74 A4.40,4.40 0 0,1 62.22,68.74 L60.20,63.05"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="1.97"
+        android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
+    <path android:pathData="M68.92,36.00 L62.17,45.90 L65.99,46.12 L61.55,54.34 L63.38,54.34 L70.49,43.76 L67.12,43.54 Z"
+        android:fillColor="#FFFFFFFF"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="0.55" android:strokeLineJoin="round" />
+</vector>
