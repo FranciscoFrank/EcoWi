@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Battery bar: track + level-scaled fill (ImageView.setImageLevel), both tinted at runtime. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="8dp">
+
+    <ImageView
+        android:id="@+id/bar_track"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/w_bar_shape"
+        android:tint="@color/ew_w_track_auto" />
+
+    <ImageView
+        android:id="@+id/bar_fill"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/w_bar_level" />
+</FrameLayout>

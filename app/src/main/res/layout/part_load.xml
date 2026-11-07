@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Consumption block: one static page (load_single) or the AC⇄DC flipper (runs in the launcher). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/load_block"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/load_single"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/load_single_icon"
+            style="@style/EW.Widget.LoadIcon"
+            android:src="@drawable/ic_idle" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/load_single_value"
+                style="@style/EW.Widget.LoadValue"
+                android:text="@string/soc_unknown" />
+
+            <TextView
+                android:id="@+id/load_single_label"
+                style="@style/EW.Widget.LoadLabel"
+                android:text="@string/label_idle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ViewFlipper
+        android:id="@+id/load_flipper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoStart="true"
+        android:flipInterval="5000"
+        android:inAnimation="@anim/ew_flip_in"
+        android:measureAllChildren="true"
+        android:outAnimation="@anim/ew_flip_out"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ac_icon"
+                style="@style/EW.Widget.LoadIcon"
+                android:src="@drawable/ic_ac" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+
+                <TextView android:id="@+id/ac_value" style="@style/EW.Widget.LoadValue" />
+
+                <TextView
+                    android:id="@+id/ac_label"
+                    style="@style/EW.Widget.LoadLabel"
+                    android:text="@string/label_ac" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/dc_icon"
+                style="@style/EW.Widget.LoadIcon"
+                android:src="@drawable/ic_dc" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+
+                <TextView android:id="@+id/dc_value" style="@style/EW.Widget.LoadValue" />
+
+                <TextView
+                    android:id="@+id/dc_label"
+                    style="@style/EW.Widget.LoadLabel"
+                    android:text="@string/label_dc" />
+            </LinearLayout>
+        </LinearLayout>
+    </ViewFlipper>
+</FrameLayout>

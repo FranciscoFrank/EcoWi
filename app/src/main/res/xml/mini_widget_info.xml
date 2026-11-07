@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mini: 1×1 ring or 2×1 pill. Marked for the lock screen (keyguard): Android 16 QPR1+ lock-screen
+  widgets accept any app widget; whether One UI offers it in its own lock-screen widget area
+  depends on the firmware.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="ua.ecowi.ui.WidgetConfigActivity"
+    android:description="@string/widget_mini_description"
+    android:initialLayout="@layout/widget_ring_small"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:previewImage="@mipmap/ic_launcher"
+    android:previewLayout="@layout/widget_mini_preview"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="1"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen|keyguard"
+    android:widgetFeatures="reconfigurable|configuration_optional" />

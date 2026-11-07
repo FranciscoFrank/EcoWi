@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Bar widget. Default 5×1 (needs a 5-column home grid: One UI Home → Home screen grid → 5×5/5×6).
+  Resizable both ways with small minimums so One UI can fit it into stacks of other sizes.
+  targetCell*/previewLayout/description are Android 12+; older launchers use minWidth/minHeight
+  and previewImage.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="ua.ecowi.ui.WidgetConfigActivity"
+    android:description="@string/widget_bar_description"
+    android:initialLayout="@layout/widget_row"
+    android:minWidth="250dp"
+    android:minHeight="40dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="40dp"
+    android:previewImage="@mipmap/ic_launcher"
+    android:previewLayout="@layout/widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="5"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable|configuration_optional" />

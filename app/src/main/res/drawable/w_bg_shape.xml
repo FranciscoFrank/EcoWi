@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- White mask; colour and opacity are applied at runtime (setColorFilter / setImageAlpha). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="@dimen/ew_widget_radius" />
+    <solid android:color="#FFFFFFFF" />
+</shape>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Width follows ImageView.setImageLevel (0–10000 = 0–100 %). <scale> keeps the rounded end. -->
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/w_bar_shape"
+    android:scaleGravity="start|center_vertical"
+    android:scaleWidth="100%" />
