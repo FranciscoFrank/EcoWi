@@ -1,0 +1,194 @@
+<!doctype html>
+<!-- Template, not a page: tools/site/build.py turns it into _site/ (English at /,
+     Ukrainian at /uk/). The marker syntax is described at the top of that script. -->
+<html lang="{{:lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{EcoWi: EcoFlow DELTA 3 widgets for Android|EcoWi: віджети EcoFlow DELTA 3 для Android}}</title>
+  <meta name="description" content="{{Free, open-source Android widgets and alerts for EcoFlow DELTA 3 power stations: charge, load, live mode in the Now Bar and a warning when the station stops responding.|Безкоштовні віджети й сповіщення з відкритим кодом для зарядних станцій EcoFlow DELTA 3 на Android: заряд, навантаження, живий режим у Now Bar і попередження, коли станція перестає відповідати.}}">
+  <link rel="canonical" href="{{:url}}">
+  <link rel="alternate" hreflang="en" href="{{:url_en}}">
+  <link rel="alternate" hreflang="uk" href="{{:url_uk}}">
+  <link rel="alternate" hreflang="x-default" href="{{:url_en}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{EcoWi: your EcoFlow's charge on your home screen|EcoWi: заряд EcoFlow на головному екрані}}">
+  <meta property="og:description" content="{{Open-source widgets and alerts for EcoFlow DELTA 3 stations on Android.|Віджети й сповіщення з відкритим кодом для станцій EcoFlow DELTA 3 на Android.}}">
+  <meta property="og:url" content="{{:url}}">
+  <meta property="og:image" content="{{:og_image}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#1F2328">
+  <link rel="icon" href="{{:root}}assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="{{:root}}assets/fonts/unbounded-semibold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="{{:root}}assets/style.css">
+  <script src="{{:root}}assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">{{Skip to content|Перейти до змісту}}</a>
+
+  <div class="wall">
+    <header class="top">
+      <a class="brand" href="./">{{:logo}}<span>EcoWi</span></a>
+      <nav class="nav" aria-label="{{Sections|Розділи}}">
+        <a href="#features">{{Features|Можливості}}</a>
+        <a href="#install">{{Install|Встановлення}}</a>
+        <a href="https://github.com/FranciscoFrank/EcoWi">GitHub</a>
+        <a class="lang" href="{{:other}}" hreflang="{{:other_lang}}" lang="{{:other_lang}}">{{Українська|English}}</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">{{Your EcoFlow's charge, on your home screen|Заряд EcoFlow на головному екрані}}</h1>
+          <p class="lede">{{Free Android widgets and alerts for the EcoFlow DELTA&nbsp;3 family. See the charge and what's drawing power at a glance, and get a heads-up when the station stops responding.|Безкоштовні віджети й сповіщення для Android для станцій EcoFlow DELTA&nbsp;3. Заряд і навантаження з першого погляду, а ще попередження, коли станція перестає відповідати.}}</p>
+          <div class="actions">
+            <a class="button primary" id="download" href="https://github.com/FranciscoFrank/EcoWi/releases/latest"
+               data-label="{{Download EcoWi %v (APK, %s)|Завантажити EcoWi %v (APK, %s)}}"
+               data-mb="{{MB|МБ}}">{{Download APK|Завантажити APK}}</a>
+            <a class="button" href="https://github.com/FranciscoFrank/EcoWi">{{Source code|Вихідний код}}</a>
+          </div>
+          <p class="fine">{{Android 8 or newer. Open source and in the public domain. Not affiliated with EcoFlow.|Android 8 або новіший. Відкритий код, суспільне надбання. Не пов’язано з EcoFlow.}}</p>
+        </div>
+
+        <div class="stage" data-theme="dark"
+             data-hm="{{~%hh %mm|~%h год %m хв}}" data-m="{{~%m min|~%m хв}}" data-empty="{{Empty|Розряджена}}">
+          <div class="glow" aria-hidden="true"></div>
+          <div class="widgets" aria-hidden="true">
+            <div class="w w-ring">
+              <span class="ring-wrap">
+                <svg class="ring" viewBox="0 0 100 100">
+                  <circle class="ring-track" cx="50" cy="50" r="42"></circle>
+                  <circle class="ring-arc" cx="50" cy="50" r="42" pathLength="100"></circle>
+                </svg>
+                <span class="soc" data-soc>78%</span>
+              </span>
+              <span class="w-load">AC · 245 {{W|Вт}}</span>
+              <span class="caption" data-caption>{{~3h 16m · 16:42|~3 год 16 хв · 16:42}}</span>
+            </div>
+            <div class="w w-bar">
+              <span class="soc" data-soc>78%</span>
+              <span class="w-mid">
+                <span class="bar"><span class="bar-fill"></span></span>
+                <span class="caption" data-caption>{{~3h 16m · 16:42|~3 год 16 хв · 16:42}}</span>
+              </span>
+              <span class="w-rule"></span>
+              <span class="w-load2">
+                <svg class="plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0V8Zm6 9v4"/></svg>
+                <span><b>245 {{W|Вт}}</b><small>AC</small></span>
+              </span>
+            </div>
+          </div>
+          <div class="controls">
+            <label class="slider">
+              <span>{{Drag to change the charge|Потягніть, щоб змінити заряд}}</span>
+              <input id="soc" type="range" min="0" max="100" value="78" step="1">
+            </label>
+            <div class="seg" role="group" aria-label="{{Widget theme|Тема віджета}}">
+              <button type="button" data-set-theme="dark" aria-pressed="true">{{Dark|Темна}}</button>
+              <button type="button" data-set-theme="light" aria-pressed="false">{{Light|Світла}}</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="day">
+    <section class="shots" aria-labelledby="shots-title">
+      <h2 id="shots-title">{{A widget for every spot|Віджет для будь-якого місця}}</h2>
+      <p class="section-lede">{{A 5×1 bar that stacks with your other widgets, a ring that can also show the phone's battery, and a mini badge for the home or lock screen.|Смуга 5×1, яку можна складати в стек з іншими віджетами, кільце, що може показувати ще й батарею телефона, і міні-значок для головного екрана чи екрана блокування.}}</p>
+      <figure class="mock-frame">{{:mock}}</figure>
+    </section>
+
+    <section id="features" class="features" aria-labelledby="features-title">
+      <h2 id="features-title">{{What it does|Що вміє}}</h2>
+      <dl class="facts">
+        <div>
+          <dt>{{Live mode|Живий режим}}</dt>
+          <dd>{{Keeps a connection open and puts the charge in the Now Bar on One UI&nbsp;8 (Live Updates on Android&nbsp;16). Without it, EcoWi refreshes every 5 to 60 minutes.|Тримає з’єднання відкритим і показує заряд у Now Bar на One UI&nbsp;8 (живі оновлення в Android&nbsp;16). Без нього EcoWi оновлюється кожні 5–60 хвилин.}}</dd>
+        </div>
+        <div>
+          <dt>{{Alerts|Сповіщення}}</dt>
+          <dd>{{15&nbsp;% and 5&nbsp;% left, fully charged, charging started, grid lost or back, and a device plugged into a port.|Залишилося 15&nbsp;% і 5&nbsp;%, повністю заряджено, почалося заряджання, зникла чи повернулася мережа, до порту під’єднали пристрій.}}</dd>
+        </div>
+        <div>
+          <dt>{{When the station goes quiet|Коли станція замовкає}}</dt>
+          <dd>{{If the station stops answering because it's switched off, asleep or off Wi-Fi, EcoWi says so and tells you when it's back. It doesn't blame the station when it's your phone that's offline.|Якщо станція не відповідає, бо вимкнена, заснула чи без Wi-Fi, EcoWi про це скаже і повідомить, коли вона повернеться. Якщо без інтернету телефон, станцію не звинувачуватиме.}}</dd>
+        </div>
+        <div>
+          <dt>{{Only the ports you have|Лише ваші порти}}</dt>
+          <dd>{{A built-in list of DELTA&nbsp;3 models hides outlets your station doesn't have. Ports also show up by themselves once something draws power from them.|Вбудований перелік моделей DELTA&nbsp;3 ховає роз’єми, яких на вашій станції немає. Порти також з’являються самі, щойно щось бере з них живлення.}}</dd>
+        </div>
+        <div>
+          <dt>{{Your look|Ваш вигляд}}</dt>
+          <dd>{{Light, dark or system theme for each widget, background opacity and your wallpaper colours. English and Ukrainian.|Світла, темна чи системна тема для кожного віджета, прозорість тла й кольори шпалер. Англійська та українська мови.}}</dd>
+        </div>
+        <div>
+          <dt>{{No middleman|Без посередників}}</dt>
+          <dd>{{The app talks to EcoFlow's cloud directly; there's no EcoWi server. Passwords and API keys are encrypted with a key kept in the Android Keystore.|Застосунок спілкується з хмарою EcoFlow напряму, сервера EcoWi немає. Паролі й ключі API зашифровані ключем, що зберігається в Android Keystore.}}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="connect" aria-labelledby="connect-title">
+      <h2 id="connect-title">{{Two ways to connect|Два способи під’єднатися}}</h2>
+      <div class="pair">
+        <div>
+          <h3>{{EcoFlow account|Акаунт EcoFlow}}</h3>
+          <p>{{Sign in with the email and password you use in the EcoFlow app, and it works right away. It uses the same unofficial channel as the EcoFlow app, so it can stop working if EcoFlow changes it.|Увійдіть з тією ж поштою й паролем, що й у застосунку EcoFlow, і все запрацює одразу. Це той самий неофіційний канал, що використовує застосунок EcoFlow, тож він може перестати працювати, якщо EcoFlow його змінить.}}</p>
+        </div>
+        <div>
+          <h3>{{Developer API|Developer API}}</h3>
+          <p>{{Official keys from EcoFlow's developer portal. EcoFlow has to approve the developer account first, and not every station is available there yet.|Офіційні ключі з порталу розробників EcoFlow. Спершу EcoFlow має схвалити акаунт розробника, і не всі станції там уже доступні.}}</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="install" class="install" aria-labelledby="install-title">
+      <h2 id="install-title">{{Install|Встановлення}}</h2>
+      <ol class="steps">
+        <li>{{Download the APK from the <a href="https://github.com/FranciscoFrank/EcoWi/releases/latest">latest release</a>.|Завантажте APK з <a href="https://github.com/FranciscoFrank/EcoWi/releases/latest">останнього випуску</a>.}}</li>
+        <li>{{Open it. When Android asks, allow your browser to install apps.|Відкрийте файл. Коли Android запитає, дозвольте браузеру встановлювати застосунки.}}</li>
+        <li>{{In EcoWi, open <b>Connection</b> and sign in, or paste your Developer API keys.|В EcoWi відкрийте вкладку <b>Зв’язок</b> і увійдіть або вставте ключі Developer API.}}</li>
+        <li>{{Long-press the home screen, tap <b>Widgets</b> and pick EcoWi.|Затисніть порожнє місце на головному екрані, торкніться <b>Віджети</b> й виберіть EcoWi.}}</li>
+      </ol>
+    </section>
+
+    <section class="stations" aria-labelledby="stations-title">
+      <h2 id="stations-title">{{Stations|Станції}}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{{Station|Станція}}</th>
+              <th scope="col">{{AC outlets, 230&nbsp;V / 120&nbsp;V|Розетки AC, 230&nbsp;В / 120&nbsp;В}}</th>
+              <th scope="col">{{Other ports shown|Інші порти, що показуються}}</th>
+              <th scope="col">{{Port layout|Розкладка портів}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">DELTA 3 Classic</th><td>2 / 3</td><td>USB-A, 2 × USB-C</td><td class="ok">{{Checked on a real unit|Перевірено на станції}}</td></tr>
+            <tr><th scope="row">DELTA 3</th><td>4 / 6</td><td>2 × USB-A, 2 × USB-C, 12&nbsp;{{V|В}}</td><td>{{From the spec sheet|За специфікацією}}</td></tr>
+            <tr><th scope="row">DELTA 3 Plus</th><td>4 / 6</td><td>2 × USB-A, 2 × USB-C, 12&nbsp;{{V|В}}</td><td>{{From the spec sheet|За специфікацією}}</td></tr>
+            <tr><th scope="row">DELTA 3 1500</th><td>4 / 6</td><td>2 × USB-A, 2 × USB-C, 12&nbsp;{{V|В}}</td><td>{{From the spec sheet|За специфікацією}}</td></tr>
+            <tr><th scope="row">DELTA 3 Max Plus</th><td>4 / 4</td><td>USB-A, 2 × USB-C, 12&nbsp;{{V|В}}</td><td>{{From the spec sheet|За специфікацією}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">{{Got another station, or ports that don't match? <a href="https://github.com/FranciscoFrank/EcoWi/issues/new?template=station_report.md">Report it</a> and it can be added.|Інша станція чи порти не збігаються? <a href="https://github.com/FranciscoFrank/EcoWi/issues/new?template=station_report.md">Повідомте</a>, і її можна буде додати.}}</p>
+    </section>
+
+    <footer class="foot">
+      <p>{{EcoWi is free and in the public domain under <a href="https://github.com/FranciscoFrank/EcoWi/blob/main/LICENSE">The Unlicense</a>. It isn't made by or affiliated with EcoFlow; EcoFlow and DELTA are trademarks of their owner.|EcoWi безкоштовний і є суспільним надбанням за ліцензією <a href="https://github.com/FranciscoFrank/EcoWi/blob/main/LICENSE">The Unlicense</a>. Його створено не EcoFlow і він з EcoFlow не пов’язаний; EcoFlow і DELTA — торговельні марки їхнього власника.}}</p>
+      <nav class="foot-links" aria-label="{{Project|Проєкт}}">
+        <a href="https://github.com/FranciscoFrank/EcoWi">{{Source code|Вихідний код}}</a>
+        <a href="https://github.com/FranciscoFrank/EcoWi/releases">{{Releases|Випуски}}</a>
+        <a href="https://github.com/FranciscoFrank/EcoWi/blob/main/CHANGELOG.md">{{Changelog|Зміни}}</a>
+        <a href="https://github.com/FranciscoFrank/EcoWi/blob/main/CONTRIBUTING.md">{{Contributing|Як долучитися}}</a>
+        <a href="https://github.com/FranciscoFrank/EcoWi/blob/main/SECURITY.md">{{Security|Безпека}}</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>
