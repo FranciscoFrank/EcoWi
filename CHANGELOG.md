@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-07
+
 ### Added
 
 - Station data over the same channel as the EcoFlow app: account sign-in, MQTT certificate, and DELTA 3 protobuf frame decoding (display, runtime and BMS heartbeat messages).
@@ -35,4 +37,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Account passwords and Developer API keys are encrypted with AES-GCM using a key stored in the Android Keystore.
 
-[Unreleased]: https://github.com/FranciscoFrank/EcoWi/commits/main
+[Unreleased]: https://github.com/FranciscoFrank/EcoWi/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/FranciscoFrank/EcoWi/releases/tag/v1.0.0
