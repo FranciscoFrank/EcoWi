@@ -13,7 +13,7 @@ By taking part you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Development setup
 
-1. Install Android Studio with support for AGP 9.4 and JDK 17.
+1. Install Android Studio with support for AGP 9.4. Gradle starts on JDK 17 or newer; its daemon runs on JDK 25 (`gradle/gradle-daemon-jvm.properties`), which Gradle downloads by itself.
 2. Clone the repository and open it in Android Studio, or build from the command line:
 
    ```bash
@@ -31,7 +31,8 @@ See the [project structure](README.md#project-structure) in the README for where
 - No hard-coded user-visible text: add strings to `res/values/strings.xml` (English, the base language) **and** `res/values-uk/strings.xml`. If you can't write the Ukrainian text, copy the English one and say so in the pull request.
 - Widgets use `RemoteViews`, so only the view classes RemoteViews allows (`FrameLayout`, `LinearLayout`, `TextView`, `ImageView`, `ViewFlipper`, …) may appear in widget layouts. A plain `<View>` crashes the widget at runtime.
 - Keep `minSdk 26` working: guard newer APIs with `Build.VERSION.SDK_INT` checks.
-- Icons and README images are generated: change `tools/logo/` or `tools/docs/` and re-run them instead of editing the outputs by hand (see [tools/README.md](tools/README.md)).
+- Icons, README images, the widget-picker preview and the website are generated: change `tools/` or `site/` and re-run the scripts instead of editing the outputs by hand (see [tools/README.md](tools/README.md)).
+- Colours come from the Neon palette in [docs/BRAND.md](docs/BRAND.md). Use the existing tokens (`Neon` in `Theme.kt`, `ew_*` in `colors.xml`) rather than new hex values.
 
 ## Commit messages
 
@@ -46,7 +47,7 @@ Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/
 ```
 
 - **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
-- **Scopes** used in this repo: `core`, `data`, `widget`, `notify`, `live`, `ui`, `i18n`, `icon`, `tools`, `deps`.
+- **Scopes** used in this repo: `core`, `data`, `widget`, `notify`, `live`, `ui`, `i18n`, `icon`, `tools`, `site`, `deps`.
 - Write the description in the imperative mood, lower case, without a trailing period, ideally under 72 characters.
 - Mark breaking changes with `!` after the type/scope and a `BREAKING CHANGE:` footer.
 
@@ -61,10 +62,10 @@ build(deps): bump Compose BOM to 2026.08.00
 
 ## Pull requests
 
-1. Fork the repository and create a branch from `master`, for example `feat/ac-toggle` or `fix/widget-radius`.
+1. Fork the repository and create a branch from `main`, for example `feat/ac-toggle` or `fix/widget-radius`.
 2. Make focused commits that follow the convention above.
 3. Before opening the pull request:
-   - `./gradlew test` passes;
+   - `./gradlew test` passes (CI runs it, plus a debug build and lint, on every pull request);
    - new strings exist in both `values/` and `values-uk/`;
    - UI changes come with a screenshot or short screen recording;
    - no credentials, tokens, serial numbers or personal data are included anywhere, including test fixtures and logs.
@@ -78,6 +79,55 @@ English (`res/values/strings.xml`) is the source of truth. To add a language:
 2. Translate the text. Keep every format placeholder exactly as it is (`%1$d`, `%1$s`, `%2$d`, `%%`) and keep `formatted="false"` where it appears.
 3. Add the language code to `localeFilters` in `app/build.gradle.kts`, for example `setOf("en", "uk", "de")`. The per-app language list on Android 13+ is generated from it.
 4. Check the app in the new language: on Android 13+ via *Settings → Apps → EcoWi → Language*.
+
+## Station models
+
+The ports EcoWi shows come from `app/src/main/kotlin/ua/ecowi/core/StationModels.kt`. To add a station or fix one:
+
+1. Add or edit a `StationModel`: a stable `id` (it's saved in settings, so never rename one), the display `name`, the set of `ports`, `acOutlets` for each `Region` (`V230` for 220–240 V markets, `V120` for 100–120 V) and `aliases`, the product names the EcoFlow cloud reports for it.
+2. Add it to `StationModels.ALL` and cover it in `app/src/test/kotlin/ua/ecowi/core/StationModelsTest.kt`, including how its product name is matched.
+3. In the pull request, say where the numbers come from: your own unit (best, with the raw keys from *Connection → Test*), or the spec sheet with a link.
+
+Ports outside the model's set still appear once they report a load, so a missing port is an annoyance, not a hidden reading.
+
+## Releasing
+
+Releases are built by GitHub Actions (`.github/workflows/release.yml`) when a version tag is pushed:
+
+1. Move the `[Unreleased]` entries in `CHANGELOG.md` under a new `## [1.2.0] - YYYY-MM-DD` heading and commit (`chore(release): 1.2.0`). That section becomes the release notes.
+2. Tag and push: `git tag v1.2.0 && git push origin v1.2.0`. A suffix (`v1.3.0-beta.1`) publishes a pre-release.
+3. The workflow runs the unit tests, builds `EcoWi-1.2.0.apk` with `versionName` 1.2.0 and `versionCode` 10200 (major × 10000 + minor × 100 + patch), and attaches it to a GitHub release with `SHA256SUMS.txt`.
+
+### Signing key
+
+Without a keystore the workflow signs with a throwaway debug key and warns about it: such an APK installs, but it can't update the previous release. Create a key once and keep it safe; losing it means users have to uninstall to update.
+
+```bash
+keytool -genkeypair -v -keystore ecowi-release.jks -alias ecowi \
+        -keyalg RSA -keysize 4096 -validity 10000
+base64 -w0 ecowi-release.jks > ecowi-release.jks.b64     # macOS: base64 -i ecowi-release.jks
+```
+
+Then add four repository secrets under *Settings → Secrets and variables → Actions*:
+
+| Secret | Value |
+|---|---|
+| `KEYSTORE_BASE64` | contents of `ecowi-release.jks.b64` |
+| `KEYSTORE_PASSWORD` | the keystore password |
+| `KEY_ALIAS` | `ecowi` (or the alias you chose) |
+| `KEY_PASSWORD` | the key password |
+
+For a signed build on your own machine, put the same values in `~/.gradle/gradle.properties` (`ecowi.keystore=/path/to/ecowi-release.jks`, `ecowi.keystore.password`, `ecowi.key.alias`, `ecowi.key.password`) or in `ECOWI_*` environment variables. `*.jks` files are git-ignored; never commit one.
+
+### Website
+
+`site/index.html` is a bilingual template for [the project page](https://franciscofrank.github.io/EcoWi/). `.github/workflows/pages.yml` builds it with `tools/site/build.py` and deploys it on every push to `main` that touches the site. One-time setup: *Settings → Pages → Build and deployment → Source: GitHub Actions*. The download button finds the newest APK through the GitHub API, so a release needs no site change.
+
+Preview locally:
+
+```bash
+python tools/site/build.py && python -m http.server -d _site 8000
+```
 
 ## Protocol research
 

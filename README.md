@@ -6,17 +6,21 @@
 
 <p align="center">
   Home-screen widgets, a lock-screen live status and the alerts the official app doesn't have,<br>
-  for the <b>EcoFlow DELTA 3 Classic</b> portable power station.
+  for <b>EcoFlow DELTA 3</b> portable power stations.
 </p>
 
 <p align="center">
+  <a href="https://github.com/FranciscoFrank/EcoWi/actions/workflows/ci.yml"><img src="https://github.com/FranciscoFrank/EcoWi/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Unlicense-blue.svg" alt="License: Unlicense"></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84.svg?logo=android&logoColor=white" alt="Android 8.0+">
   <img src="https://img.shields.io/badge/Kotlin-2.4-7F52FF.svg?logo=kotlin&logoColor=white" alt="Kotlin 2.4">
   <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4.svg" alt="Jetpack Compose">
 </p>
 
-<p align="center"><b>English</b> · <a href="README.uk.md">Українська</a></p>
+<p align="center">
+  <a href="https://github.com/FranciscoFrank/EcoWi/releases/latest"><b>Download the APK</b></a> · <a href="https://franciscofrank.github.io/EcoWi/">Website</a><br>
+  <b>English</b> · <a href="README.uk.md">Українська</a>
+</p>
 
 > [!IMPORTANT]
 > EcoWi is an **unofficial** community project. It is not affiliated with, endorsed by or supported by EcoFlow. It talks to EcoFlow's cloud the same way the official app does, so an EcoFlow update can break it at any time. See [Disclaimer](#disclaimer).
@@ -37,6 +41,7 @@ Every widget has its own theme (system / light / dark), background opacity (0–
 
 - **AC / DC**: per widget, choose *AC first*, *DC first* or *Alternate* (switches every 3/5/8/12 s; done by the launcher itself, no background work).
 - **Tap** a widget to refresh right away. Before the station is connected, a tap opens EcoWi.
+- The charge is set in **Unbounded**, the same face as the in-app preview. Launchers don't load an app's fonts in widgets, so EcoWi draws the percentage as an image; the other widget text uses the system font.
 
 ### Alerts
 
@@ -46,6 +51,7 @@ Each can be turned on or off:
 - **Fully charged**: 100 % or the charge limit set on the station.
 - **Charging started** (at most once every 10 minutes, so a flickering grid doesn't spam you).
 - **Grid power lost / restored**.
+- **Station not responding**: when the station stops answering (switched off, asleep, out of Wi-Fi) and again when it's back. See [Offline detection](#offline-detection).
 - **Device plugged in**: "A device was plugged into Type-C 1", "…into USB-A 2", "…into the AC output". Thresholds: USB / 12 V ≥ 3 W, AC ≥ 10 W. A port alerts again only after it has been idle for at least 2 minutes.
 
 > The station reports its AC outlets as one combined value, so individual AC sockets can't be told apart. They share one "AC output" alert.
@@ -56,24 +62,42 @@ Keeps a connection to the station open, like the EcoFlow app does. Widgets updat
 
 Without live mode, EcoWi checks the station in the background every 5/10/15/30/60 minutes.
 
+### Ports for your model
+
+EcoWi lists only the ports your station has. A table of DELTA 3 models (`core/StationModels.kt`) holds each model's outlets, and the number of AC sockets follows your region (230 V or 120 V). With the Developer API the model is detected from EcoFlow's cloud; otherwise pick it under *Connection* → *Station model*. A port that reports a load is shown even if the table doesn't list it.
+
+| Station | AC outlets, 230 V / 120 V | Other ports shown | Port layout |
+|---|---|---|---|
+| DELTA 3 Classic | 2 / 3 | USB-A, 2 × USB-C | checked on a real unit |
+| DELTA 3, DELTA 3 Plus, DELTA 3 1500 | 4 / 6 | 2 × USB-A, 2 × USB-C, 12 V | from the spec sheet |
+| DELTA 3 Max Plus | 4 / 4 | USB-A, 2 × USB-C, 12 V | from the spec sheet |
+
+Different ports on your unit, or another station? Open a [station report](https://github.com/FranciscoFrank/EcoWi/issues/new?template=station_report.md); adding a model is described in [CONTRIBUTING.md](CONTRIBUTING.md#station-models).
+
 ## Status
 
 Early stage. Things that are verified:
 
-- 31 unit tests for the core logic (API signing, data mapping, DELTA 3 frame decoding, alert detection, AC/DC modes).
+- 53 unit tests for the core logic (API signing, data mapping, DELTA 3 frame decoding, alert and offline detection, station models and ports, AC/DC modes, time left).
 - The DELTA 3 frame decoder is tested against frames produced by Google's official protobuf runtime from the community protocol schema.
-- The full Kotlin code, Compose UI included, compiles against the Android API 37 SDK and the real AndroidX/Compose libraries.
+- The full Kotlin code, Compose UI included, compiles against the Android API 37 SDK and the real AndroidX/Compose libraries, and [CI](https://github.com/FranciscoFrank/EcoWi/actions/workflows/ci.yml) builds and tests every push.
 
-Not yet verified: running against a real DELTA 3 Classic. Start with **Test** on the *Connection* tab and look at the raw keys it shows. Reports are very welcome, see [SUPPORT.md](SUPPORT.md).
+EcoWi is developed on a DELTA 3 Classic. Other DELTA 3 models haven't been tried yet: start with **Test** on the *Connection* tab and look at the raw keys it shows. Reports are very welcome, see [SUPPORT.md](SUPPORT.md).
 
 ## Getting started
+
+### Install
+
+Download the APK from the [latest release](https://github.com/FranciscoFrank/EcoWi/releases/latest), open it on the phone and allow your browser to install apps when Android asks. Every release also has a `SHA256SUMS.txt` to check the file against.
+
+If you've been running a build from Android Studio, uninstall it first: it's signed with your own debug key, and Android won't update an app with one signed by a different key.
 
 ### Build
 
 Requirements:
 
 - Android Studio with support for AGP 9.4 (if Gradle sync reports an incompatible AGP version, update Android Studio)
-- JDK 17
+- JDK 17 or newer to start Gradle. The Gradle daemon itself runs on JDK 25 (`gradle/gradle-daemon-jvm.properties`), which Gradle downloads if it isn't installed.
 
 Versions used: AGP 9.4.0, Gradle 9.6.0, Kotlin 2.4.0, Compose BOM 2026.08.00, `compileSdk 37`, `targetSdk 36`, `minSdk 26`.
 
@@ -84,7 +108,7 @@ cd EcoWi
 ./gradlew test                 # unit tests
 ```
 
-Release builds are signed with the debug key so they are easy to sideload on your own phone; set up your own signing config before distributing.
+`assembleRelease` signs with your keystore when `ECOWI_KEYSTORE` and the related settings are given, in the environment or in `~/.gradle/gradle.properties` (see [CONTRIBUTING.md](CONTRIBUTING.md#releasing)). Without them it falls back to the debug key, which is fine for your own phone.
 
 What older Android versions get:
 
@@ -103,7 +127,8 @@ What older Android versions get:
 2. Enter the e-mail and password you use in the EcoFlow app, and the station's serial number (EcoFlow app: station → ⚙ → About device, or the label on the unit).
 3. Tap **Test**. It shows charge, AC, DC, input and every raw key received, without replacing your saved session.
 4. Tap **Save**.
-5. **Alerts** tab: allow notifications, optionally turn on **Live mode** and remove battery restrictions for EcoWi.
+5. **Station model**: leave it on *Automatic* (needs the Developer API) or pick your station, so only its ports are listed.
+6. **Alerts** tab: allow notifications, optionally turn on **Live mode** and remove battery restrictions for EcoWi.
 
 ### Add widgets (One UI)
 
@@ -129,6 +154,16 @@ The primary data source is **the same channel the EcoFlow app uses** (unofficial
 
 Without live mode, EcoWi connects for a few seconds in the background, takes a snapshot and disconnects. In live mode the connection stays open, reconnects on failure and re-requests the full state every 5 minutes.
 
+### Offline detection
+
+Nothing tells the app "the station was switched off", so EcoWi works it out. A refresh that reaches EcoFlow's cloud but gets nothing from the station counts as *silent*. After two silent checks that span at least 3 minutes, or right away when the Developer API reports the station offline, you get a *Station not responding* alert and the widgets show *No response* with the time of the last data. When data arrives again, a *Back online* alert says how long it was gone.
+
+- **Live mode**: after 90 s without data the station is asked for its full state again, so the alert comes about 3–4 minutes after it goes quiet.
+- **Periodic refresh**: after the first silent check EcoWi checks again 3 minutes later instead of waiting for the next interval.
+- Problems on the phone's side (no internet, an expired sign-in) never count as the station being off.
+
+The logic is in `core/StationLink.kt` and has its own tests.
+
 **Alternative**: the official **EcoFlow Developer API** (*Connection* → *Developer API*; keys from developer-eu.ecoflow.com; HMAC-SHA256 signed REST `quota/all`, then MQTT `/open/...`). The DELTA 3 Classic may not be supported there yet.
 
 **If Test returns data but charge or watts stay empty**, expand *Show raw keys* and find what your station calls those fields. The names EcoWi looks for are in `core/QuotaMapper.kt` (`SOC`, `AC_OUT`, `PORT_KEYS`, `GRID_FLAG`, …; case and `_` are ignored). Unknown protobuf fields show up as `f<number>`.
@@ -148,6 +183,9 @@ app/src/main/kotlin/ua/ecowi/
 │   ├── QuotaMapper.kt       raw keys → PowerSnapshot
 │   ├── LoadResolver.kt      AC/DC modes, charge bands, staleness
 │   ├── StationEvents.kt     event detector for alerts
+│   ├── StationModels.kt     DELTA 3 models, their ports, ports learned from telemetry
+│   ├── StationLink.kt       "station not responding" detection
+│   ├── Durations.kt         time-left rounding
 │   ├── EcoFlowSigner.kt     Developer API request signing
 │   ├── proto/Proto.kt       minimal protobuf reader/writer
 │   └── ecoflow/             DELTA 3 frame codec and field tables
@@ -158,20 +196,25 @@ app/src/main/kotlin/ua/ecowi/
 │   ├── OpenMqttSnapshot.kt  Developer API (MQTT)
 │   ├── StationRepository.kt source selection, cache, alert dispatch
 │   ├── Settings.kt          app and per-widget settings
-│   └── SecureStore.kt       credential encryption
+│   ├── SecureStore.kt       credential encryption
+│   └── Net.kt               phone connectivity checks
 ├── appwidget/             RemoteViews widgets (bar, ring, mini), palettes, rendering
 ├── notify/Notifier.kt     channels, event alerts, Live Update
 ├── live/LiveService.kt    live mode (foreground service) and restart after reboot
 ├── work/RefreshWork.kt    background refresh (WorkManager)
-└── ui/                    Compose: "Volt" theme; Station / Widgets / Alerts / Connection tabs;
+└── ui/                    Compose: "Neon" theme; Station / Widgets / Alerts / Connection tabs;
                            per-widget settings
 tools/logo/                logo and launcher icon generator (Python)
-tools/docs/                README images (mockups, logo variants)
+tools/docs/                README images (mockups, logo variants, palette)
+tools/fonts/               widget-picker preview of the charge text (glyphs → VectorDrawable)
+tools/site/                builds the website from site/
+site/                      website template (GitHub Pages)
+.github/workflows/         CI, releases, website deploy
 ```
 
 ## Logo
 
-A vector redraw of a neon sign: one tube traces the outline of a bold "W", and a lightning bolt runs through two breaks in the right inner stroke, its tail merging into the tube. Geometry and colours were measured on the reference: tube `#C9EE85`, core `#EBFEB3`, bolt `#DCFB90`, background `#4A5057 → #1F2328`.
+A vector redraw of a neon sign: one tube traces the outline of a bold "W", and a lightning bolt runs through two breaks in the right inner stroke, its tail merging into the tube. Geometry and colours were measured on the reference: tube `#C9EE85`, core `#EBFEB3`, bolt `#DCFB90`, background `#4A5057 → #1F2328`. The app's **Neon** palette is built from the same colours; [docs/BRAND.md](docs/BRAND.md) has the full palette, the typefaces and where each value lives.
 
 ![Logo variants](docs/logo_variants.png)
 
@@ -181,7 +224,8 @@ A vector redraw of a neon sign: one tube traces the outline of a bold "W", and a
 
 ## Roadmap
 
-- [ ] Detect which ports the station actually has (from telemetry and a per-model table) instead of a fixed list.
+- [x] Detect which ports the station actually has (a per-model table plus telemetry) instead of a fixed list.
+- [ ] Detect the model over the EcoFlow account channel too (today only the Developer API reports it).
 - [ ] Turn AC and USB outputs on and off from the app, a Quick Settings tile and the bar widget.
 - [ ] Support more DELTA 3 family models.
 
@@ -194,6 +238,7 @@ Contributions are welcome: code, translations, protocol findings and device repo
 - Help and questions: [SUPPORT.md](SUPPORT.md)
 - Security issues: [SECURITY.md](SECURITY.md) (please don't open public issues for them)
 - Changes: [CHANGELOG.md](CHANGELOG.md)
+- Releases and the website: [CONTRIBUTING.md](CONTRIBUTING.md#releasing)
 
 ## License
 

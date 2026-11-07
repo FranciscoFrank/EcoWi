@@ -11,7 +11,7 @@ EcoWi's own code is released into the public domain under [The Unlicense](LICENS
 | DELTA 3 protobuf field numbers and names, derived from `ef_delta3.proto` in [tolwi/hassio-ecoflow-cloud](https://github.com/tolwi/hassio-ecoflow-cloud) | `app/src/main/kotlin/ua/ecowi/core/ecoflow/Delta3Fields.kt` | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | Gradle Wrapper | `gradlew`, `gradlew.bat`, `gradle/wrapper/` | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 
-The fonts are subsets of the original files. The field table keeps only field numbers and names; the values, comments and code around them are EcoWi's own.
+The fonts are subsets of the original files; the website serves the same files with their licence texts next to them (`assets/fonts/`). The field table keeps only field numbers and names; the values, comments and code around them are EcoWi's own.
 
 ## Linked into the app
 

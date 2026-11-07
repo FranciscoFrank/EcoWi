@@ -4,7 +4,7 @@ EcoWi stores EcoFlow account credentials on the phone and connects to EcoFlow's 
 
 ## Supported versions
 
-Only the latest code on the `master` branch (and the latest release, once releases exist) receives security fixes.
+Only the latest code on the `main` branch and the latest [release](https://github.com/FranciscoFrank/EcoWi/releases/latest) receive security fixes.
 
 ## Reporting a vulnerability
 
