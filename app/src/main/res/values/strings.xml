@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EcoWi</string>
+
+    <!-- Widgets: picker -->
+    <string name="widget_bar_label">EcoWi · Bar</string>
+    <string name="widget_ring_label">EcoWi · Ring</string>
+    <string name="widget_mini_label">EcoWi · Mini</string>
+    <string name="widget_bar_description">Station charge and AC/DC load — a 5×1 bar that fits widget stacks</string>
+    <string name="widget_ring_description">Circular charge gauge; at 4×2 it also shows this phone\'s battery</string>
+    <string name="widget_mini_description">A small charge indicator for the home and lock screen</string>
+
+    <!-- Widgets: content -->
+    <string name="soc_percent">%1$d%%</string>
+    <string name="soc_unknown">—</string>
+    <string name="watts">%1$d W</string>
+    <string name="kilowatts">%1$s kW</string>
+    <string name="duration_hm">~%1$dh %2$dm</string>
+    <string name="duration_m">~%1$d min</string>
+    <string name="caption_charging">+%1$s</string>
+    <string name="caption_refreshing">Updating…</string>
+    <string name="caption_loading">Loading…</string>
+    <string name="caption_setup">Tap to connect your station</string>
+    <string name="caption_no_data">No data: %1$s</string>
+    <string name="label_ac">AC</string>
+    <string name="label_dc">DC</string>
+    <string name="label_idle">idle</string>
+    <string name="label_station">Station</string>
+    <string name="label_phone">Phone</string>
+    <string name="preview_soc" formatted="false">78%</string>
+    <string name="preview_caption">~6h 10m · 16:42</string>
+    <string name="preview_load">245 W</string>
+    <string name="preview_load_ac">AC · 245 W</string>
+
+    <!-- Ports -->
+    <string name="port_ac">AC</string>
+    <string name="port_usb_a1">USB-A 1</string>
+    <string name="port_usb_a2">USB-A 2</string>
+    <string name="port_usb_c1">Type-C 1</string>
+    <string name="port_usb_c2">Type-C 2</string>
+    <string name="port_12v">12 V</string>
+
+    <!-- Notification channels -->
+    <string name="ch_battery">Battery level</string>
+    <string name="ch_battery_desc">Low battery and fully charged</string>
+    <string name="ch_power">Power</string>
+    <string name="ch_power_desc">Charging started, grid lost or restored</string>
+    <string name="ch_ports">Ports</string>
+    <string name="ch_ports_desc">Devices plugged into the station\'s outputs</string>
+    <string name="ch_live">Live connection</string>
+    <string name="ch_live_desc">Ongoing notification while EcoWi is connected to the station</string>
+
+    <!-- Notifications -->
+    <string name="n_low_title">%1$d%% left</string>
+    <string name="n_low_text">Time to think about charging.</string>
+    <string name="n_low_critical_title">Critically low: %1$d%%</string>
+    <string name="n_low_critical_text">Plug in power — the station will shut down soon.</string>
+    <string name="n_remaining">%1$s remaining.</string>
+    <string name="n_full_title" formatted="false">Charged to 100%</string>
+    <string name="n_full_limit_title">Charged to the %1$d%% limit</string>
+    <string name="n_full_text">The station is fully charged.</string>
+    <string name="n_charging_title">Charging started</string>
+    <string name="n_charging_text">Input power %1$s.</string>
+    <string name="n_charging_text_plain">The station is connected to power.</string>
+    <string name="n_grid_on_title">Grid power is back</string>
+    <string name="n_grid_on_text">The station is running from the grid again.</string>
+    <string name="n_grid_on_text_charging">The station is back on the grid and charging.</string>
+    <string name="n_grid_off_title">Grid power lost</string>
+    <string name="n_grid_off_text">The station is running on battery, %1$d%%.</string>
+    <string name="n_port_title">A device was plugged into %1$s</string>
+    <string name="n_port_ac_title">A device was plugged into the %1$s output</string>
+    <string name="n_port_text">Drawing %1$s</string>
+
+    <!-- Live notification / Now Bar -->
+    <string name="live_title">Station %1$d%%</string>
+    <string name="live_title_charging">Charging · %1$d%%</string>
+    <string name="live_title_waiting">EcoWi</string>
+    <string name="live_text_connecting">Connecting to the station…</string>
+    <string name="live_offline">Offline</string>
+    <string name="live_ac">AC %1$s</string>
+    <string name="live_dc">DC %1$s</string>
+    <string name="live_idle">No load</string>
+
+    <!-- Tabs -->
+    <string name="tab_station">Station</string>
+    <string name="tab_widgets">Widgets</string>
+    <string name="tab_alerts">Alerts</string>
+    <string name="tab_connection">Connection</string>
+
+    <!-- Station -->
+    <string name="onboard_title">Connect your station</string>
+    <string name="onboard_text">Sign in with the same account you use in the EcoFlow app and enter the station\'s serial number.</string>
+    <string name="onboard_action">Connect</string>
+    <string name="state_charging">Charging</string>
+    <string name="state_discharging">Discharging</string>
+    <string name="state_idle">Standby</string>
+    <string name="state_unknown">No data</string>
+    <string name="remain_to_full">Full in %1$s</string>
+    <string name="remain_left">%1$s left</string>
+    <string name="grid_on">Grid on</string>
+    <string name="grid_off">No grid</string>
+    <string name="charge_limit">Limit %1$d%%</string>
+    <string name="stat_input">Input</string>
+    <string name="stat_output">Output</string>
+    <string name="section_ports">Ports</string>
+    <string name="last_error">Last error</string>
+    <string name="pill_live">Live</string>
+    <string name="pill_periodic">Periodic</string>
+    <string name="pill_reconnecting">Reconnecting</string>
+    <string name="pill_error">Error</string>
+    <string name="source_app">EcoFlow app channel</string>
+    <string name="source_dev">Developer API</string>
+    <string name="footer_updated">Updated at %1$s · %2$s</string>
+
+    <!-- Widgets screen -->
+    <string name="widgets_intro">Three widgets: bar, ring and mini. Each one has its own theme and background opacity, independent of the phone\'s theme.</string>
+    <string name="widgets_defaults">Default look</string>
+    <string name="widgets_defaults_desc">Used for new widgets. Any widget can be adjusted on its own: long-press it → Settings.</string>
+    <string name="widgets_apply_all">Apply to all widgets</string>
+    <string name="widgets_how">How to add</string>
+    <string name="how_bar_title">Bar 5×1</string>
+    <string name="how_bar_text">Long-press an empty spot on the home screen → Widgets → EcoWi → Bar. To make a stack, drop it onto another widget of the same size. 5×1 needs a 5-column grid (Home screen settings → Grid).</string>
+    <string name="how_ring_title">Ring</string>
+    <string name="how_ring_text">A 2×2 circular gauge. Stretch it to 4×2 to see this phone\'s battery next to it, like the Battery widget.</string>
+    <string name="how_lock_title">Lock screen</string>
+    <string name="how_lock_text">Mini is marked as a lock-screen widget. If your One UI version allows third-party widgets there, look for EcoWi in the list. If not, the Now Bar shows the charge on the lock screen.</string>
+    <string name="how_nowbar_title">Now Bar</string>
+    <string name="how_nowbar_text">Turn on Live mode in Alerts — the charge appears in the Now Bar and status bar (Android 16 / One UI 8). If EcoWi doesn\'t show up there, enable Live notifications for all apps in Developer options.</string>
+
+    <!-- Appearance -->
+    <string name="appearance_section">Appearance</string>
+    <string name="appearance_theme">Widget theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="appearance_opacity">Background opacity</string>
+    <string name="appearance_dynamic">Wallpaper colours</string>
+    <string name="appearance_dynamic_desc">Material You: background and accents follow your wallpaper</string>
+    <string name="action_save">Save</string>
+    <string name="saved">Saved</string>
+
+    <!-- Alerts screen -->
+    <string name="alerts_permission_title">Allow notifications</string>
+    <string name="alerts_permission_text">Without permission EcoWi can\'t tell you about low battery or charging.</string>
+    <string name="alerts_permission_action">Allow</string>
+    <string name="live_mode_title">Live mode</string>
+    <string name="live_mode_desc">Keeps a connection to the station like the EcoFlow app does, so widgets and alerts update within seconds. Shows an ongoing notification (in the Now Bar on One UI 8).</string>
+    <string name="live_mode_needs_account">Available only when connected through an EcoFlow account.</string>
+    <string name="live_running">Connected</string>
+    <string name="live_starting">Connecting…</string>
+    <string name="refresh_title">Background refresh</string>
+    <string name="refresh_desc">How often to check the station without live mode. Android may delay intervals under 15 min while the phone is idle; tapping a widget always refreshes right away.</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="battery_opt_title">Battery restrictions</string>
+    <string name="battery_opt_text">One UI may put EcoWi to sleep in the background. Allow unrestricted use so the connection isn\'t cut.</string>
+    <string name="battery_opt_action">Remove restriction</string>
+    <string name="nowbar_title">Now Bar</string>
+    <string name="nowbar_text">Android hasn\'t allowed EcoWi to post Live notifications yet. Turn the option on for EcoWi in notification settings.</string>
+    <string name="nowbar_action">Notification settings</string>
+    <string name="alerts_section">Notify me about</string>
+    <string name="alert_low">Low battery</string>
+    <string name="alert_low_desc">At 15% and 5% remaining</string>
+    <string name="alert_full">Fully charged</string>
+    <string name="alert_full_desc">100% or the charge limit you set</string>
+    <string name="alert_charging">Charging started</string>
+    <string name="alert_charging_desc">The station started charging from the grid or solar</string>
+    <string name="alert_grid">Grid</string>
+    <string name="alert_grid_desc">Grid power was lost or restored</string>
+    <string name="alert_ports">Devices plugged in</string>
+    <string name="alert_ports_desc">A load appeared on a USB, Type-C or 12 V port. The station reports AC outlets together, so they share one alert.</string>
+    <string name="alerts_footer_live">Live mode is on: alerts arrive within seconds.</string>
+    <string name="alerts_footer_periodic">Without live mode the state is checked every few minutes, so alerts may be late and short plug-ins may be missed.</string>
+
+    <!-- Connection -->
+    <string name="source_account">EcoFlow account</string>
+    <string name="source_developer">Developer API</string>
+    <string name="account_title">EcoFlow account</string>
+    <string name="account_desc">The same sign-in as the EcoFlow app. Data comes over the same channels the app uses (unofficial). The password is stored encrypted on this phone only.</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="label_sn">Station serial number</string>
+    <string name="sn_hint">You can find it in the EcoFlow app (station → ⚙ → About device) and on the label on the unit.</string>
+    <string name="advanced_show">Advanced</string>
+    <string name="advanced_hide">Hide advanced</string>
+    <string name="label_host">API server</string>
+    <string name="dev_title">Developer API</string>
+    <string name="dev_desc">The official Open API, with keys from developer-eu.ecoflow.com. DELTA 3 Classic may not be supported there yet.</string>
+    <string name="region_europe">Europe</string>
+    <string name="region_americas">Americas</string>
+    <string name="region_global">Global</string>
+    <string name="label_access_key">Access Key</string>
+    <string name="label_secret_key">Secret Key</string>
+    <string name="action_find_devices">Find my devices</string>
+    <string name="devices_none">No devices on this account</string>
+    <string name="action_test">Test</string>
+    <string name="testing">Testing…</string>
+    <string name="test_ok_title">Connected</string>
+    <string name="test_failed_title">Failed</string>
+    <string name="test_battery">Battery: %1$s</string>
+    <string name="test_ac">AC output: %1$s</string>
+    <string name="test_dc">DC output: %1$s</string>
+    <string name="test_in">Input: %1$s</string>
+    <string name="test_keys">Keys received: %1$d</string>
+    <string name="show_keys">Show raw keys</string>
+    <string name="hide_keys">Hide raw keys</string>
+    <string name="fill_all">Please fill in all fields</string>
+    <string name="about_section">About EcoWi</string>
+    <string name="privacy_note">EcoWi has no server of its own: the phone talks directly to EcoFlow\'s servers over the same channels as their app. This is unofficial, so an EcoFlow update could break it. Sign-in data is stored encrypted (Android Keystore) on this device only.</string>
+
+    <!-- Widget settings -->
+    <string name="title_config">Widget settings</string>
+    <string name="config_question">When both AC and DC are in use, show</string>
+    <string name="mode_ac">AC first</string>
+    <string name="mode_ac_desc">Outlets matter more. DC shows only while AC has no load.</string>
+    <string name="mode_dc">DC first</string>
+    <string name="mode_dc_desc">USB / 12 V matter more. AC shows only while DC has no load.</string>
+    <string name="mode_cycle">Alternate</string>
+    <string name="mode_cycle_desc">Switch between AC and DC every few seconds.</string>
+    <string name="cycle_every">%1$d s</string>
+    <string name="config_no_keys">The station isn\'t connected yet — until then the widget shows a hint.</string>
+    <string name="action_open_app">Open EcoWi</string>
+    <string name="action_done">Done</string>
+</resources>

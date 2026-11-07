@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ukrainian translation. Base language: English (res/values/strings.xml). -->
+<resources>
+    <string name="app_name">EcoWi</string>
+
+    <!-- Widgets: picker -->
+    <string name="widget_bar_label">EcoWi · Смуга</string>
+    <string name="widget_ring_label">EcoWi · Кільце</string>
+    <string name="widget_mini_label">EcoWi · Міні</string>
+    <string name="widget_bar_description">Заряд станції і навантаження AC/DC — смуга 5×1, підходить для стеків</string>
+    <string name="widget_ring_description">Кругла діаграма заряду; у розмірі 4×2 — разом із зарядом цього телефона</string>
+    <string name="widget_mini_description">Маленький індикатор заряду для головного екрана й екрана блокування</string>
+
+    <!-- Widgets: content -->
+    <string name="soc_percent">%1$d%%</string>
+    <string name="soc_unknown">—</string>
+    <string name="watts">%1$d Вт</string>
+    <string name="kilowatts">%1$s кВт</string>
+    <string name="duration_hm">~%1$d год %2$d хв</string>
+    <string name="duration_m">~%1$d хв</string>
+    <string name="caption_charging">+%1$s</string>
+    <string name="caption_refreshing">Оновлюю…</string>
+    <string name="caption_loading">Завантаження…</string>
+    <string name="caption_setup">Торкніться, щоб під’єднати станцію</string>
+    <string name="caption_no_data">Немає даних: %1$s</string>
+    <string name="label_ac">AC</string>
+    <string name="label_dc">DC</string>
+    <string name="label_idle">простій</string>
+    <string name="label_station">Станція</string>
+    <string name="label_phone">Телефон</string>
+    <string name="preview_soc" formatted="false">78%</string>
+    <string name="preview_caption">~6 год 10 хв · 16:42</string>
+    <string name="preview_load">245 Вт</string>
+    <string name="preview_load_ac">AC · 245 Вт</string>
+
+    <!-- Ports -->
+    <string name="port_ac">AC</string>
+    <string name="port_usb_a1">USB-A 1</string>
+    <string name="port_usb_a2">USB-A 2</string>
+    <string name="port_usb_c1">Type-C 1</string>
+    <string name="port_usb_c2">Type-C 2</string>
+    <string name="port_12v">12 В</string>
+
+    <!-- Notification channels -->
+    <string name="ch_battery">Заряд батареї</string>
+    <string name="ch_battery_desc">Низький і повний заряд</string>
+    <string name="ch_power">Живлення</string>
+    <string name="ch_power_desc">Початок заряджання, зникнення й повернення мережі</string>
+    <string name="ch_ports">Порти</string>
+    <string name="ch_ports_desc">Під’єднання приладів до виходів станції</string>
+    <string name="ch_live">Живе з’єднання</string>
+    <string name="ch_live_desc">Постійне сповіщення, поки EcoWi на зв’язку зі станцією</string>
+
+    <!-- Notifications -->
+    <string name="n_low_title">Залишилось %1$d%%</string>
+    <string name="n_low_text">Час подумати про заряджання.</string>
+    <string name="n_low_critical_title">Критичний заряд: %1$d%%</string>
+    <string name="n_low_critical_text">Під’єднайте живлення — станція скоро вимкнеться.</string>
+    <string name="n_remaining">Вистачить на %1$s.</string>
+    <string name="n_full_title" formatted="false">Заряджено до 100%</string>
+    <string name="n_full_limit_title">Заряджено до ліміту %1$d%%</string>
+    <string name="n_full_text">Станцію повністю заряджено.</string>
+    <string name="n_charging_title">Почалося заряджання</string>
+    <string name="n_charging_text">Вхідна потужність %1$s.</string>
+    <string name="n_charging_text_plain">Станцію під’єднано до живлення.</string>
+    <string name="n_grid_on_title">Мережа з’явилася</string>
+    <string name="n_grid_on_text">Станція знову живиться від мережі.</string>
+    <string name="n_grid_on_text_charging">Станція знову від мережі й заряджається.</string>
+    <string name="n_grid_off_title">Зникла мережа</string>
+    <string name="n_grid_off_text">Станція працює від батареї, %1$d%%.</string>
+    <string name="n_port_title">Під’єднано прилад до порту %1$s</string>
+    <string name="n_port_ac_title">Під’єднано прилад до виходу %1$s</string>
+    <string name="n_port_text">Споживання %1$s</string>
+
+    <!-- Live notification / Now Bar -->
+    <string name="live_title">Станція %1$d%%</string>
+    <string name="live_title_charging">Заряджається · %1$d%%</string>
+    <string name="live_title_waiting">EcoWi</string>
+    <string name="live_text_connecting">Під’єднуюсь до станції…</string>
+    <string name="live_offline">Немає зв’язку</string>
+    <string name="live_ac">AC %1$s</string>
+    <string name="live_dc">DC %1$s</string>
+    <string name="live_idle">Без навантаження</string>
+
+    <!-- Tabs -->
+    <string name="tab_station">Станція</string>
+    <string name="tab_widgets">Віджети</string>
+    <string name="tab_alerts">Сповіщення</string>
+    <string name="tab_connection">Зв’язок</string>
+
+    <!-- Station -->
+    <string name="onboard_title">Під’єднайте станцію</string>
+    <string name="onboard_text">Увійдіть тим самим акаунтом, що й у застосунку EcoFlow, і вкажіть серійний номер станції.</string>
+    <string name="onboard_action">Під’єднати</string>
+    <string name="state_charging">Заряджається</string>
+    <string name="state_discharging">Розряджається</string>
+    <string name="state_idle">Очікування</string>
+    <string name="state_unknown">Немає даних</string>
+    <string name="remain_to_full">До повного %1$s</string>
+    <string name="remain_left">Вистачить на %1$s</string>
+    <string name="grid_on">Мережа є</string>
+    <string name="grid_off">Без мережі</string>
+    <string name="charge_limit">Ліміт %1$d%%</string>
+    <string name="stat_input">Вхід</string>
+    <string name="stat_output">Вихід</string>
+    <string name="section_ports">Порти</string>
+    <string name="last_error">Остання помилка</string>
+    <string name="pill_live">Наживо</string>
+    <string name="pill_periodic">Періодично</string>
+    <string name="pill_reconnecting">Перепід’єднання</string>
+    <string name="pill_error">Помилка</string>
+    <string name="source_app">канал застосунку EcoFlow</string>
+    <string name="source_dev">Developer API</string>
+    <string name="footer_updated">Оновлено о %1$s · %2$s</string>
+
+    <!-- Widgets screen -->
+    <string name="widgets_intro">Три віджети: смуга, кільце і міні. Тему й прозорість фону можна задати кожному окремо — незалежно від теми телефона.</string>
+    <string name="widgets_defaults">Вигляд за замовчуванням</string>
+    <string name="widgets_defaults_desc">Для нових віджетів. Кожен віджет налаштовується окремо: затисніть його → Налаштування.</string>
+    <string name="widgets_apply_all">Застосувати до всіх віджетів</string>
+    <string name="widgets_how">Як додати</string>
+    <string name="how_bar_title">Смуга 5×1</string>
+    <string name="how_bar_text">Затисніть порожнє місце на головному екрані → Віджети → EcoWi → «Смуга». Щоб зробити стек, перетягніть віджет на інший такого ж розміру. Для 5×1 потрібна сітка з 5 стовпців (Параметри головного екрана → Сітка).</string>
+    <string name="how_ring_title">Кільце</string>
+    <string name="how_ring_text">Кругла діаграма 2×2. Розтягніть до 4×2 — поруч з’явиться заряд цього телефона, як у віджеті «Акумулятор».</string>
+    <string name="how_lock_title">Екран блокування</string>
+    <string name="how_lock_text">«Міні» позначений як віджет для екрана блокування. Якщо ваша версія One UI дозволяє сторонні віджети там — шукайте EcoWi у списку. Якщо ні, заряд на заблокованому екрані покаже Now Bar.</string>
+    <string name="how_nowbar_title">Now Bar</string>
+    <string name="how_nowbar_text">Увімкніть «Живий режим» на вкладці «Сповіщення» — заряд з’явиться в Now Bar і в рядку стану (Android 16 / One UI 8). Якщо EcoWi там не видно, увімкніть «Живі сповіщення для всіх застосунків» у параметрах розробника.</string>
+
+    <!-- Appearance -->
+    <string name="appearance_section">Вигляд</string>
+    <string name="appearance_theme">Тема віджета</string>
+    <string name="theme_system">Як у системі</string>
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="appearance_opacity">Непрозорість фону</string>
+    <string name="appearance_dynamic">Кольори зі шпалер</string>
+    <string name="appearance_dynamic_desc">Material You: фон і акценти підлаштовуються під шпалери</string>
+    <string name="action_save">Зберегти</string>
+    <string name="saved">Збережено</string>
+
+    <!-- Alerts screen -->
+    <string name="alerts_permission_title">Дозвольте сповіщення</string>
+    <string name="alerts_permission_text">Без дозволу EcoWi не зможе повідомити про низький заряд чи початок заряджання.</string>
+    <string name="alerts_permission_action">Дозволити</string>
+    <string name="live_mode_title">Живий режим</string>
+    <string name="live_mode_desc">Тримає з’єднання зі станцією, як застосунок EcoFlow: віджети й сповіщення оновлюються за секунди. Показує постійне сповіщення (на One UI 8 — у Now Bar).</string>
+    <string name="live_mode_needs_account">Доступно лише з підключенням через акаунт EcoFlow.</string>
+    <string name="live_running">На зв’язку</string>
+    <string name="live_starting">Під’єднуюсь…</string>
+    <string name="refresh_title">Оновлення у фоні</string>
+    <string name="refresh_desc">Як часто перевіряти станцію без живого режиму. Менше 15 хв Android може відкладати, коли телефон у спокої; дотик до віджета оновлює одразу.</string>
+    <string name="minutes_short">%1$d хв</string>
+    <string name="battery_opt_title">Обмеження батареї</string>
+    <string name="battery_opt_text">One UI може приспати EcoWi у фоні. Дозвольте працювати без обмежень, щоб зв’язок не обривався.</string>
+    <string name="battery_opt_action">Зняти обмеження</string>
+    <string name="nowbar_title">Now Bar</string>
+    <string name="nowbar_text">Android ще не дозволив EcoWi показуватися як живе сповіщення. Увімкніть цю опцію для EcoWi в налаштуваннях сповіщень.</string>
+    <string name="nowbar_action">Налаштування сповіщень</string>
+    <string name="alerts_section">Про що повідомляти</string>
+    <string name="alert_low">Низький заряд</string>
+    <string name="alert_low_desc">Коли залишається 15% і 5%</string>
+    <string name="alert_full">Повний заряд</string>
+    <string name="alert_full_desc">100% або встановлений ліміт заряду</string>
+    <string name="alert_charging">Початок заряджання</string>
+    <string name="alert_charging_desc">Станція почала заряджатися від мережі чи сонця</string>
+    <string name="alert_grid">Мережа</string>
+    <string name="alert_grid_desc">Живлення від мережі зникло або з’явилося</string>
+    <string name="alert_ports">Під’єднання приладів</string>
+    <string name="alert_ports_desc">На порту USB, Type-C чи 12 В з’явилося навантаження. Розетки AC станція рахує разом, тому для них — одне сповіщення.</string>
+    <string name="alerts_footer_live">Живий режим увімкнено: сповіщення приходять за кілька секунд.</string>
+    <string name="alerts_footer_periodic">Без живого режиму стан перевіряється раз на кілька хвилин — сповіщення можуть запізнюватися, а короткі під’єднання губитися.</string>
+
+    <!-- Connection -->
+    <string name="source_account">Акаунт EcoFlow</string>
+    <string name="source_developer">Developer API</string>
+    <string name="account_title">Акаунт EcoFlow</string>
+    <string name="account_desc">Той самий вхід, що й у застосунку EcoFlow. Дані йдуть тими ж каналами, що й у нього (неофіційно). Пароль зберігається зашифрованим лише на цьому телефоні.</string>
+    <string name="label_email">Ел. пошта</string>
+    <string name="label_password">Пароль</string>
+    <string name="label_sn">Серійний номер станції</string>
+    <string name="sn_hint">Його видно в застосунку EcoFlow (станція → ⚙ → Про пристрій) і на наліпці на корпусі.</string>
+    <string name="advanced_show">Додатково</string>
+    <string name="advanced_hide">Сховати додаткове</string>
+    <string name="label_host">Сервер API</string>
+    <string name="dev_title">Developer API</string>
+    <string name="dev_desc">Офіційний Open API з ключами з developer-eu.ecoflow.com. DELTA 3 Classic там поки може не підтримуватися.</string>
+    <string name="region_europe">Європа</string>
+    <string name="region_americas">Америка</string>
+    <string name="region_global">Глобальний</string>
+    <string name="label_access_key">Access Key</string>
+    <string name="label_secret_key">Secret Key</string>
+    <string name="action_find_devices">Знайти мої пристрої</string>
+    <string name="devices_none">На цьому акаунті немає пристроїв</string>
+    <string name="action_test">Перевірити</string>
+    <string name="testing">Перевіряю…</string>
+    <string name="test_ok_title">Зв’язок є</string>
+    <string name="test_failed_title">Не вдалося</string>
+    <string name="test_battery">Заряд: %1$s</string>
+    <string name="test_ac">Вихід AC: %1$s</string>
+    <string name="test_dc">Вихід DC: %1$s</string>
+    <string name="test_in">Вхід: %1$s</string>
+    <string name="test_keys">Отримано ключів: %1$d</string>
+    <string name="show_keys">Показати сирі ключі</string>
+    <string name="hide_keys">Сховати сирі ключі</string>
+    <string name="fill_all">Заповніть усі поля</string>
+    <string name="about_section">Про EcoWi</string>
+    <string name="privacy_note">EcoWi не має власного сервера: телефон звертається напряму до серверів EcoFlow тими ж каналами, що й їхній застосунок. Це неофіційний спосіб — після оновлень EcoFlow щось може перестати працювати. Дані входу зберігаються зашифрованими (Android Keystore) лише на цьому пристрої.</string>
+
+    <!-- Widget settings -->
+    <string name="title_config">Налаштування віджета</string>
+    <string name="config_question">Коли працюють і AC, і DC, показувати</string>
+    <string name="mode_ac">Спершу AC</string>
+    <string name="mode_ac_desc">Розетки важливіші. DC видно, лише поки AC не навантажений.</string>
+    <string name="mode_dc">Спершу DC</string>
+    <string name="mode_dc_desc">USB / 12 В важливіші. AC видно, лише поки DC не навантажений.</string>
+    <string name="mode_cycle">По черзі</string>
+    <string name="mode_cycle_desc">Перемикати AC і DC кожні кілька секунд.</string>
+    <string name="cycle_every">%1$d с</string>
+    <string name="config_no_keys">Станцію ще не під’єднано — до того віджет показуватиме підказку.</string>
+    <string name="action_open_app">Відкрити EcoWi</string>
+    <string name="action_done">Готово</string>
+</resources>
