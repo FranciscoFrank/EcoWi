@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Activities: Compose draws everything; this sets the window before the first frame. -->
+    <style name="Theme.EcoWi" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ew_app_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Widget text (colours here are defaults; widgets re-colour at runtime) -->
+    <style name="EW.Widget.Soc" parent="">
+        <item name="android:textColor">@color/ew_w_text_auto</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="EW.Widget.Soc.Small">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="EW.Widget.Soc.Large">
+        <item name="android:textSize">34sp</item>
+    </style>
+
+    <style name="EW.Widget.Caption" parent="">
+        <item name="android:textColor">@color/ew_w_text2_auto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="EW.Widget.LoadIcon" parent="">
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="EW.Widget.LoadValue" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ew_w_text_auto</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="EW.Widget.LoadLabel" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:textColor">@color/ew_w_text2_auto</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+    </style>
+</resources>

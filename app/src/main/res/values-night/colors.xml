@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ew_app_bg">#FF0B0D10</color>
+    <color name="ew_w_text_auto">@color/ew_w_text_dark</color>
+    <color name="ew_w_text2_auto">@color/ew_w_text2_dark</color>
+    <color name="ew_w_track_auto">@color/ew_w_track_dark</color>
+    <color name="ew_batt_high">@color/ew_batt_high_dark</color>
+    <color name="ew_batt_medium">@color/ew_batt_medium_dark</color>
+    <color name="ew_batt_low">@color/ew_batt_low_dark</color>
+    <color name="ew_batt_critical">@color/ew_batt_critical_dark</color>
+</resources>
