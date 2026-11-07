@@ -61,7 +61,7 @@ jobs:
           ECOWI_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           ECOWI_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ECOWI_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew testReleaseUnitTest assembleRelease
+        run: ./gradlew testDebugUnitTest assembleRelease
 
       - name: Collect the APK
         env:
