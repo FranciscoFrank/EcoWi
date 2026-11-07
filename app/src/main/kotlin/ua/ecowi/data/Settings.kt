@@ -3,6 +3,8 @@ package ua.ecowi.data
 import android.content.Context
 import ua.ecowi.core.DisplayMode
 import ua.ecowi.core.EventConfig
+import ua.ecowi.core.StationModels
+import ua.ecowi.core.StationModel
 import java.util.UUID
 
 /** Where station data comes from. */
@@ -164,6 +166,7 @@ class AppSettings(context: Context) {
             notifyChargingStarted = prefs.getBoolean(K_N_CHARGING, true),
             notifyGrid = prefs.getBoolean(K_N_GRID, true),
             notifyPorts = prefs.getBoolean(K_N_PORTS, true),
+            notifyLink = prefs.getBoolean(K_N_LINK, true),
         )
         set(value) = prefs.edit()
             .putBoolean(K_N_LOW, value.notifyLow)
@@ -171,7 +174,28 @@ class AppSettings(context: Context) {
             .putBoolean(K_N_CHARGING, value.notifyChargingStarted)
             .putBoolean(K_N_GRID, value.notifyGrid)
             .putBoolean(K_N_PORTS, value.notifyPorts)
+            .putBoolean(K_N_LINK, value.notifyLink)
             .apply()
+
+    // ------------------------------------------------------------------ station model
+
+    /** Model chosen by the user ([StationModels] id); null = automatic. */
+    var stationModelId: String?
+        get() = prefs.getString(K_MODEL, null)
+        set(value) = prefs.edit().apply { if (value == null) remove(K_MODEL) else putString(K_MODEL, value) }.apply()
+
+    /** Model reported by EcoFlow's cloud (Developer API device list), if any. */
+    var detectedModelId: String?
+        get() = prefs.getString(K_MODEL_DETECTED, null)
+        set(value) = prefs.edit().apply { if (value == null) remove(K_MODEL_DETECTED) else putString(K_MODEL_DETECTED, value) }.apply()
+
+    /** When the cloud was last asked for the model (to ask at most once a day). */
+    var modelProbeAtMs: Long
+        get() = prefs.getLong(K_MODEL_PROBE_AT, 0L)
+        set(value) = prefs.edit().putLong(K_MODEL_PROBE_AT, value).apply()
+
+    val stationModel: StationModel?
+        get() = StationModels.resolve(stationModelId, detectedModelId)
 
     // ------------------------------------------------------------------ widgets
 
@@ -243,6 +267,10 @@ class AppSettings(context: Context) {
         private const val K_N_CHARGING = "notify_charging"
         private const val K_N_GRID = "notify_grid"
         private const val K_N_PORTS = "notify_ports"
+        private const val K_N_LINK = "notify_link"
+        private const val K_MODEL = "station_model"
+        private const val K_MODEL_DETECTED = "station_model_detected"
+        private const val K_MODEL_PROBE_AT = "station_model_probe_at"
         private const val K_DEF_THEME = "def_theme"
         private const val K_DEF_OPACITY = "def_opacity"
         private const val K_DEF_DYN = "def_dynamic"

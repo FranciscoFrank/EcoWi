@@ -9,11 +9,16 @@ import android.content.Intent
 import android.os.Build
 import ua.ecowi.R
 import ua.ecowi.appwidget.Format
+import android.text.format.DateUtils
 import ua.ecowi.core.BatteryBand
+import ua.ecowi.core.LinkEvent
+import ua.ecowi.core.LinkState
 import ua.ecowi.core.Port
 import ua.ecowi.core.PowerSnapshot
 import ua.ecowi.core.StationEvent
+import ua.ecowi.data.AppSettings
 import ua.ecowi.ui.MainActivity
+import java.text.DateFormat
 
 /**
  * All notifications of the app:
@@ -27,12 +32,14 @@ object Notifier {
     const val CH_BATTERY = "battery"
     const val CH_POWER = "power"
     const val CH_PORTS = "ports"
+    const val CH_STATUS = "status"
 
     const val ID_LIVE = 1
     private const val ID_LOW = 10
     private const val ID_FULL = 11
     private const val ID_CHARGING = 12
     private const val ID_GRID = 13
+    private const val ID_LINK = 14
     private const val ID_PORT_BASE = 20
 
     fun ensureChannels(context: Context) {
@@ -57,6 +64,10 @@ object Notifier {
                 description = context.getString(R.string.ch_ports_desc)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             },
+            NotificationChannel(CH_STATUS, context.getString(R.string.ch_status), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = context.getString(R.string.ch_status_desc)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            },
         )
         nm.createNotificationChannels(channels)
     }
@@ -65,6 +76,46 @@ object Notifier {
         context.getSystemService(NotificationManager::class.java).areNotificationsEnabled()
 
     // ------------------------------------------------------------------ alerts
+
+    /** "Station isn't responding" and "back online" share one notification, so the second replaces the first. */
+    fun postLink(context: Context, event: LinkEvent) {
+        if (!AppSettings(context).eventConfig.notifyLink || !canNotify(context)) return
+        ensureChannels(context)
+        val (title, text) = when (event) {
+            is LinkEvent.Unreachable -> {
+                val title = context.getString(
+                    if (event.cloudSaysOffline) R.string.n_unreachable_cloud_title else R.string.n_unreachable_title,
+                )
+                val text = event.lastSeenMs?.let {
+                    context.getString(R.string.n_unreachable_text, whenText(it), socText(context, event.lastSoc))
+                } ?: context.getString(R.string.n_unreachable_text_never)
+                title to text
+            }
+            is LinkEvent.BackOnline -> context.getString(R.string.n_back_online_title) to context.getString(
+                R.string.n_back_online_text,
+                socText(context, event.soc),
+                Format.duration(context, (event.downForMs / 60_000L).toInt()),
+            )
+        }
+        val n = Notification.Builder(context, CH_STATUS)
+            .setSmallIcon(R.drawable.ic_stat_ecowi)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(Notification.BigTextStyle().bigText(text))
+            .setColor(context.getColor(R.color.ew_brand))
+            .setAutoCancel(true)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setCategory(Notification.CATEGORY_STATUS)
+            .setContentIntent(openApp(context))
+            .build()
+        context.getSystemService(NotificationManager::class.java).notify(ID_LINK, n)
+    }
+
+    private fun whenText(ms: Long): String =
+        DateUtils.formatSameDayTime(ms, System.currentTimeMillis(), DateFormat.SHORT, DateFormat.SHORT).toString()
+
+    private fun socText(context: Context, soc: Int?): String =
+        soc?.let { context.getString(R.string.soc_percent, it) } ?: context.getString(R.string.soc_unknown)
 
     fun post(context: Context, events: List<StationEvent>, snap: PowerSnapshot) {
         if (!canNotify(context)) return
@@ -136,15 +187,25 @@ object Notifier {
     // ------------------------------------------------------------------ live notification
 
     /** Ongoing status for the live service; a Live Update (Now Bar) on Android 16+. */
-    fun live(context: Context, snap: PowerSnapshot?, connected: Boolean): Notification {
+    fun live(context: Context, snap: PowerSnapshot?, connected: Boolean, link: LinkState? = null): Notification {
         ensureChannels(context)
         val soc = snap?.socPercent
+        val unreachable = link?.down == true
         val title = when {
+            unreachable -> context.getString(R.string.live_title_unreachable)
             soc == null -> context.getString(R.string.live_title_waiting)
             snap.isCharging -> context.getString(R.string.live_title_charging, soc)
             else -> context.getString(R.string.live_title, soc)
         }
-        val text = snap?.let { liveText(context, it) } ?: context.getString(R.string.live_text_connecting)
+        val text = when {
+            unreachable -> context.getString(
+                R.string.live_text_unreachable,
+                whenText(link.lastSeenMs ?: snap?.fetchedAtMs ?: System.currentTimeMillis()),
+                socText(context, soc),
+            )
+            snap != null -> liveText(context, snap)
+            else -> context.getString(R.string.live_text_connecting)
+        }
         val subText = if (connected) null else context.getString(R.string.live_offline)
 
         val b = Notification.Builder(context, CH_LIVE)

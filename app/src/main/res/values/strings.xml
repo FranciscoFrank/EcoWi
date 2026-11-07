@@ -220,4 +220,31 @@
     <string name="config_no_keys">The station isn\'t connected yet — until then the widget shows a hint.</string>
     <string name="action_open_app">Open EcoWi</string>
     <string name="action_done">Done</string>
+    <!-- Station connection (LinkDetector) -->
+    <string name="ch_status">Station connection</string>
+    <string name="ch_status_desc">The station stopped responding or is back online</string>
+    <string name="n_unreachable_title">The station isn\'t responding</string>
+    <string name="n_unreachable_cloud_title">The station is offline</string>
+    <string name="n_unreachable_text">Last data at %1$s (%2$s). It may be switched off, asleep or without Wi-Fi. You\'ll get a notification when it answers again.</string>
+    <string name="n_unreachable_text_never">No data has arrived yet. Check that the station is on and connected to Wi-Fi.</string>
+    <string name="n_back_online_title">The station is back online</string>
+    <string name="n_back_online_text">Charge %1$s. It didn\'t respond for %2$s.</string>
+    <string name="live_title_unreachable">The station isn\'t responding</string>
+    <string name="live_text_unreachable">Last data %1$s · %2$s</string>
+    <string name="caption_unreachable">⚠ No response · %1$s</string>
+    <string name="unreachable_title">The station isn\'t responding</string>
+    <string name="unreachable_text">Last data at %1$s. It may be switched off, asleep or without Wi-Fi. EcoWi keeps trying and will tell you when it answers.</string>
+    <string name="pill_unreachable">No response</string>
+    <string name="alert_link">Station not responding</string>
+    <string name="alert_link_desc">When the station stops answering (switched off, asleep, no Wi-Fi) and when it\'s back. Not sent when it\'s your phone that is offline.</string>
+
+    <!-- Station model -->
+    <string name="model_section">Station model</string>
+    <string name="model_desc">Decides which ports EcoWi shows. In automatic mode the model is taken from EcoFlow\'s cloud (Developer API) and ports appear as soon as they draw power.</string>
+    <string name="model_auto">Automatic</string>
+    <string name="model_detected">Detected: %1$s</string>
+    <string name="model_not_detected">Not detected yet. Ports will appear as they get used.</string>
+    <string name="model_unknown_title">Which station is this?</string>
+    <string name="model_unknown_text">Choose the model under Connection so only its ports are shown. Until then EcoWi shows ports as they get used.</string>
+    <string name="port_ac_outlets">AC ×%1$d</string>
 </resources>

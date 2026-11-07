@@ -221,4 +221,31 @@
     <string name="config_no_keys">Станцію ще не під’єднано — до того віджет показуватиме підказку.</string>
     <string name="action_open_app">Відкрити EcoWi</string>
     <string name="action_done">Готово</string>
+    <!-- Station connection (LinkDetector) -->
+    <string name="ch_status">Зв’язок зі станцією</string>
+    <string name="ch_status_desc">Станція перестала відповідати або знову на зв’язку</string>
+    <string name="n_unreachable_title">Станція не відповідає</string>
+    <string name="n_unreachable_cloud_title">Станція офлайн</string>
+    <string name="n_unreachable_text">Останні дані о %1$s (%2$s). Можливо, станцію вимкнено, вона заснула або без Wi-Fi. Щойно вона відповість, прийде сповіщення.</string>
+    <string name="n_unreachable_text_never">Даних від станції ще не було. Перевірте, чи вона ввімкнена й під’єднана до Wi-Fi.</string>
+    <string name="n_back_online_title">Станція знову на зв’язку</string>
+    <string name="n_back_online_text">Заряд %1$s. Не відповідала %2$s.</string>
+    <string name="live_title_unreachable">Станція не відповідає</string>
+    <string name="live_text_unreachable">Останні дані %1$s · %2$s</string>
+    <string name="caption_unreachable">⚠ Немає відповіді · %1$s</string>
+    <string name="unreachable_title">Станція не відповідає</string>
+    <string name="unreachable_text">Останні дані о %1$s. Можливо, станцію вимкнено, вона заснула або без Wi-Fi. EcoWi продовжує спроби й повідомить, коли вона відповість.</string>
+    <string name="pill_unreachable">Немає відповіді</string>
+    <string name="alert_link">Станція не відповідає</string>
+    <string name="alert_link_desc">Коли станція перестає відповідати (вимкнена, заснула, без Wi-Fi) і коли повертається. Не надсилається, якщо без інтернету саме телефон.</string>
+
+    <!-- Station model -->
+    <string name="model_section">Модель станції</string>
+    <string name="model_desc">Від неї залежить, які порти показує EcoWi. В автоматичному режимі модель береться з хмари EcoFlow (Developer API), а порти з’являються, щойно на них є навантаження.</string>
+    <string name="model_auto">Автоматично</string>
+    <string name="model_detected">Визначено: %1$s</string>
+    <string name="model_not_detected">Ще не визначено. Порти з’являтимуться в міру використання.</string>
+    <string name="model_unknown_title">Яка у вас станція?</string>
+    <string name="model_unknown_text">Виберіть модель на вкладці «Зв’язок», щоб показувалися лише її порти. До того EcoWi показує порти в міру використання.</string>
+    <string name="port_ac_outlets">AC ×%1$d</string>
 </resources>

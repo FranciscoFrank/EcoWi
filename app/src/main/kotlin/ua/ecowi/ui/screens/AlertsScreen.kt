@@ -162,6 +162,9 @@ fun AlertsScreen(ui: StationUi) {
             ToggleRow(stringResource(R.string.alert_ports), stringResource(R.string.alert_ports_desc), config.notifyPorts, {
                 config = config.copy(notifyPorts = it); settings.eventConfig = config
             })
+            ToggleRow(stringResource(R.string.alert_link), stringResource(R.string.alert_link_desc), config.notifyLink, {
+                config = config.copy(notifyLink = it); settings.eventConfig = config
+            })
         }
         Text(
             stringResource(if (live) R.string.alerts_footer_live else R.string.alerts_footer_periodic),

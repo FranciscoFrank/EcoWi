@@ -23,6 +23,7 @@ import ua.ecowi.data.AppSettings
 import ua.ecowi.data.DataSourceKind
 import ua.ecowi.data.EcoFlowAuthException
 import ua.ecowi.data.SnapshotCache
+import ua.ecowi.data.LinkStore
 import ua.ecowi.data.StationRepository
 import ua.ecowi.notify.Notifier
 import ua.ecowi.work.RefreshScheduler
@@ -115,6 +116,8 @@ class LiveService : Service() {
 
                 var sinceFullRequest = 0L
                 var lastConnectedAt = System.currentTimeMillis()
+                lastDataAt = System.currentTimeMillis()
+                var lastProbeAt = 0L
                 while (scope.isActive) {
                     delay(FLUSH_MS)
                     flush(repo)
@@ -122,6 +125,17 @@ class LiveService : Service() {
                     if (sinceFullRequest >= FULL_REQUEST_EVERY_MS) {
                         sinceFullRequest = 0
                         runCatching { conn.requestAll() }
+                    }
+                    // Watchdog: the cloud connection is up but the station has gone quiet. An idle station
+                    // still answers "get all", so ask; if it doesn't, LinkDetector decides when to alert.
+                    val now = System.currentTimeMillis()
+                    if (conn.isConnected && now - lastDataAt > SILENCE_PROBE_MS && now - lastProbeAt >= PROBE_EVERY_MS) {
+                        lastProbeAt = now
+                        runCatching { conn.requestAll() }
+                        if (now - lastDataAt > SILENCE_PROBE_MS + FLUSH_MS) {
+                            repo.reportSilent(now)
+                            updateNotification()
+                        }
                     }
                     if (conn.isConnected) {
                         lastConnectedAt = System.currentTimeMillis()
@@ -149,10 +163,14 @@ class LiveService : Service() {
 
     private var lastWidgetRenderAt = 0L
 
+    @Volatile
+    private var lastDataAt = 0L
+
     private fun flush(repo: StationRepository) {
         if (pending.isEmpty()) return
         val batch = HashMap<String, Any?>(pending)
         batch.keys.forEach { pending.remove(it) }
+        lastDataAt = System.currentTimeMillis()
         val snap = repo.applyLive(batch) // also runs alert detection
         lastSnapshot = snap
         val now = System.currentTimeMillis()
@@ -165,10 +183,13 @@ class LiveService : Service() {
 
     private fun updateNotification() {
         val nm = getSystemService(android.app.NotificationManager::class.java)
-        nm.notify(Notifier.ID_LIVE, Notifier.live(this, lastSnapshot, connected))
+        nm.notify(Notifier.ID_LIVE, Notifier.live(this, lastSnapshot, connected, LinkStore(this).load()))
     }
 
     companion object {
+        /** Ask the station again after this long without data, then at most every [PROBE_EVERY_MS]. */
+        private const val SILENCE_PROBE_MS = 90_000L
+        private const val PROBE_EVERY_MS = 60_000L
         private const val TAG = "LiveService"
         private const val FLUSH_MS = 3_000L
         private const val FULL_REQUEST_EVERY_MS = 5 * 60_000L

@@ -34,6 +34,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.material3.FilterChip
+import ua.ecowi.core.StationModels
 import ua.ecowi.R
 import ua.ecowi.appwidget.Format
 import ua.ecowi.appwidget.Widgets
@@ -45,6 +48,7 @@ import ua.ecowi.data.DataSourceKind
 import ua.ecowi.data.DeviceInfo
 import ua.ecowi.data.EcoFlowOpenApi
 import ua.ecowi.data.EventStateStore
+import ua.ecowi.data.LinkStore
 import ua.ecowi.data.FetchResult
 import ua.ecowi.data.SnapshotCache
 import ua.ecowi.data.StationRepository
@@ -79,6 +83,8 @@ fun ConnectionScreen() {
     var secretKey by rememberSaveable { mutableStateOf(savedDev?.secretKey.orEmpty()) }
     var devSn by rememberSaveable { mutableStateOf(savedDev?.serialNumber.orEmpty()) }
     var devices by remember { mutableStateOf<List<DeviceInfo>?>(null) }
+    var modelId by remember { mutableStateOf(settings.stationModelId) }
+    var detectedModel by remember { mutableStateOf(settings.detectedModelId) }
 
     var busy by remember { mutableStateOf(false) }
     var status by remember { mutableStateOf<String?>(null) }
@@ -102,6 +108,9 @@ fun ConnectionScreen() {
         if (oldSn != settings.serialNumber) {
             SnapshotCache(context).clear()
             EventStateStore(context).reset()
+            LinkStore(context).reset()
+            settings.detectedModelId = null
+            settings.modelProbeAtMs = 0L
         }
         RefreshScheduler.ensureScheduled(context)
         RefreshScheduler.refreshNow(context)
@@ -216,7 +225,11 @@ fun ConnectionScreen() {
                         Text(
                             "${d.name} · ${d.productName ?: ""} · ${d.sn}",
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.fillMaxWidth().clickable { devSn = d.sn }.padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().clickable {
+                                devSn = d.sn
+                                StationRepository(context).rememberModel(d.productName)
+                                detectedModel = settings.detectedModelId
+                            }.padding(vertical = 8.dp),
                         )
                     }
                 }
@@ -235,6 +248,36 @@ fun ConnectionScreen() {
             status?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(it, style = MaterialTheme.typography.bodySmall, color = eco.muted)
+            }
+        }
+
+        // ---- station model: decides which ports exist
+        SectionLabel(stringResource(R.string.model_section))
+        EcoCard {
+            Text(stringResource(R.string.model_desc), style = MaterialTheme.typography.bodySmall, color = eco.muted)
+            Spacer(Modifier.height(10.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(
+                    selected = modelId == null,
+                    onClick = { modelId = null; settings.stationModelId = null },
+                    label = { Text(stringResource(R.string.model_auto)) },
+                )
+                StationModels.ALL.forEach { m ->
+                    FilterChip(
+                        selected = modelId == m.id,
+                        onClick = { modelId = m.id; settings.stationModelId = m.id },
+                        label = { Text(m.name) },
+                    )
+                }
+            }
+            if (modelId == null) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    StationModels.byId(detectedModel)?.let { stringResource(R.string.model_detected, it.name) }
+                        ?: stringResource(R.string.model_not_detected),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = eco.muted,
+                )
             }
         }
 

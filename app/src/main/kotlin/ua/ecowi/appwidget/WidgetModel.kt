@@ -9,6 +9,7 @@ import ua.ecowi.core.Freshness
 import ua.ecowi.core.LoadResolver
 import ua.ecowi.core.LoadView
 import ua.ecowi.data.AppSettings
+import ua.ecowi.data.LinkStore
 import ua.ecowi.data.SnapshotCache
 import ua.ecowi.data.StationRepository
 import ua.ecowi.data.WidgetAppearance
@@ -52,14 +53,21 @@ object WidgetModels {
             snap == null -> context.getString(R.string.caption_loading)
             else -> null
         }
+        val link = LinkStore(context).load()
         val (captionShort, captionFull) = if (status != null || snap == null) {
             (status ?: "") to (status ?: "")
-        } else {
+        } else run {
             val freshness = if (settings.liveMode) 10 else settings.refreshIntervalMin
             val stale = Freshness.isStale(snap.fetchedAtMs, now, freshness)
             val failedSince = state.lastError != null && state.lastAttemptMs > snap.fetchedAtMs
             val clock = DateFormat.getTimeFormat(context).format(Date(snap.fetchedAtMs))
             val time = if (stale || failedSince) "⚠ $clock" else clock
+            if (link.down) {
+                // The station stopped answering: say so instead of showing old numbers as current.
+                val seen = DateFormat.getTimeFormat(context).format(Date(link.lastSeenMs ?: snap.fetchedAtMs))
+                val text = context.getString(R.string.caption_unreachable, seen)
+                return@run text to text
+            }
             val remain = (if (snap.isCharging) snap.chargeRemainMin else snap.dischargeRemainMin)
                 ?.let { Format.duration(context, it) }
             val input = if (snap.isCharging) {

@@ -1,6 +1,7 @@
 package ua.ecowi.ui.screens
 
 import android.text.format.DateFormat
+import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,6 +83,23 @@ fun StationScreen(ui: StationUi, onOpenConnection: () -> Unit) {
             }
         }
 
+        if (ui.configured && ui.link.down) {
+            EcoCard {
+                Text(stringResource(R.string.unreachable_title), style = MaterialTheme.typography.titleSmall, color = eco.warn)
+                Spacer(Modifier.height(4.dp))
+                val seen = ui.link.lastSeenMs ?: snap?.fetchedAtMs
+                Text(
+                    if (seen != null) {
+                        stringResource(R.string.unreachable_text, DateUtils.formatSameDayTime(seen, System.currentTimeMillis(), java.text.DateFormat.SHORT, java.text.DateFormat.SHORT).toString())
+                    } else {
+                        stringResource(R.string.n_unreachable_text_never)
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = eco.muted,
+                )
+            }
+        }
+
         // ---- hero ring
         EcoCard(padding = 20.dp) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -133,14 +151,15 @@ fun StationScreen(ui: StationUi, onOpenConnection: () -> Unit) {
 
         // ---- ports
         SectionLabel(stringResource(R.string.section_ports))
-        val ports = snap?.ports?.keys?.sortedBy { it.ordinal }?.takeIf { it.isNotEmpty() }
-            ?: listOf(Port.AC, Port.USB_C1, Port.USB_C2, Port.USB_A1)
-        ports.chunked(2).forEach { row ->
+        // Only ports the station has: from the model table, plus any port that has drawn power.
+        val outlets = ui.model?.acOutlets?.get(ui.region)
+        ui.ports.chunked(2).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 row.forEach { port ->
                     val w = snap?.ports?.get(port)
                     PortChip(
-                        Format.portName(context, port),
+                        if (port == Port.AC && outlets != null) stringResource(R.string.port_ac_outlets, outlets)
+                        else Format.portName(context, port),
                         w?.let { Format.watts(context, it) } ?: "—",
                         active = (w ?: 0) >= EventDetector.threshold(port),
                         icon = if (port == Port.AC) R.drawable.ic_ac else R.drawable.ic_dc,
@@ -148,6 +167,12 @@ fun StationScreen(ui: StationUi, onOpenConnection: () -> Unit) {
                     )
                 }
                 if (row.size == 1) Spacer(Modifier.weight(1f))
+            }
+        }
+        if (ui.configured && ui.model == null) {
+            EcoCard(onClick = onOpenConnection) {
+                Text(stringResource(R.string.model_unknown_title), style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.model_unknown_text), style = MaterialTheme.typography.bodySmall, color = eco.muted)
             }
         }
 
@@ -175,6 +200,7 @@ private fun ConnectionPill(ui: StationUi) {
     val fresh = snap != null && System.currentTimeMillis() - snap.fetchedAtMs < 60_000
     when {
         !ui.configured -> Unit
+        ui.link.down -> StatusPill(stringResource(R.string.pill_unreachable), eco.warn)
         ui.live && fresh -> StatusPill(stringResource(R.string.pill_live), eco.good)
         ui.cached.lastError != null && snap == null -> StatusPill(stringResource(R.string.pill_error), eco.bad)
         else -> StatusPill(stringResource(if (ui.live) R.string.pill_reconnecting else R.string.pill_periodic), eco.muted)

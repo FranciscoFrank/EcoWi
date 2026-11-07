@@ -7,10 +7,16 @@ import org.json.JSONObject
 import ua.ecowi.core.ChargeState
 import ua.ecowi.core.DetectorState
 import ua.ecowi.core.EventDetector
+import ua.ecowi.core.LinkCheck
+import ua.ecowi.core.LinkDetector
+import ua.ecowi.core.LinkEvent
+import ua.ecowi.core.LinkState
 import ua.ecowi.core.Port
+import ua.ecowi.core.PortLayout
 import ua.ecowi.core.PowerSnapshot
 import ua.ecowi.core.QuotaMapper
 import ua.ecowi.core.StationEvent
+import ua.ecowi.core.StationModels
 
 /** Which channel delivered the data. */
 enum class DataSource { APP_MQTT, REST, OPEN_MQTT }
@@ -24,7 +30,26 @@ sealed interface FetchResult {
         val note: String? = null,
     ) : FetchResult
 
-    data class Failed(val message: String, val authProblem: Boolean = false) : FetchResult
+    data class Failed(
+        val message: String,
+        val authProblem: Boolean = false,
+        val kind: FailureKind = if (authProblem) FailureKind.AUTH else FailureKind.OTHER,
+    ) : FetchResult
+}
+
+/** Why a fetch failed: only the first two say something about the station itself. */
+enum class FailureKind {
+    /** EcoFlow's cloud answered but the station sent nothing. */
+    STATION_SILENT,
+
+    /** EcoFlow's cloud reports the station offline (Developer API device list). */
+    STATION_OFFLINE,
+
+    /** The phone has no working internet connection. */
+    NETWORK,
+    AUTH,
+    NO_CREDENTIALS,
+    OTHER,
 }
 
 /** Last known state, persisted so widgets render instantly (and offline). */
@@ -45,28 +70,46 @@ class StationRepository(context: Context) {
         val result = when (settings.source) {
             DataSourceKind.APP_ACCOUNT -> settings.account?.let { fetchApp(it) }
             DataSourceKind.DEVELOPER_API -> settings.credentials?.let { fetchDeveloper(it, useRestBackoff = true) }
-        } ?: FetchResult.Failed(NO_CREDENTIALS)
+        } ?: FetchResult.Failed(NO_CREDENTIALS, kind = FailureKind.NO_CREDENTIALS)
 
-        when (result) {
-            is FetchResult.Ok -> store(result.snapshot, result.source, result.rawKeys)
-            is FetchResult.Failed -> cache.saveError(result.message)
+        val now = System.currentTimeMillis()
+        val check = when (result) {
+            is FetchResult.Ok -> LinkCheck.Reached(now, store(result.snapshot, result.source, result.rawKeys).socPercent)
+            is FetchResult.Failed -> {
+                cache.saveError(result.message)
+                when (result.kind) {
+                    FailureKind.STATION_SILENT -> LinkCheck.Silent(now)
+                    FailureKind.STATION_OFFLINE -> LinkCheck.Silent(now, cloudSaysOffline = true)
+                    else -> LinkCheck.Inconclusive
+                }
+            }
         }
+        LinkDispatcher.process(app, check)
         return result
     }
+
+    /** Live mode watchdog: the connection is up but the station hasn't answered a "get all" request. */
+    fun reportSilent(atMs: Long = System.currentTimeMillis()): LinkState =
+        LinkDispatcher.process(app, LinkCheck.Silent(atMs))
 
     /**
      * Merges values that arrived on a live connection, persists them and runs event detection.
      * Returns the merged snapshot.
      */
     fun applyLive(values: Map<String, Any?>): PowerSnapshot {
-        val snapshot = QuotaMapper.map(values, System.currentTimeMillis())
-        return store(snapshot, DataSource.APP_MQTT, values)
+        val now = System.currentTimeMillis()
+        val merged = store(QuotaMapper.map(values, now), DataSource.APP_MQTT, values)
+        LinkDispatcher.process(app, LinkCheck.Reached(now, merged.socPercent))
+        return merged
     }
 
     private fun store(fresh: PowerSnapshot, source: DataSource, raw: Map<String, Any?>): PowerSnapshot {
         val merged = fresh.fillFrom(cache.load().snapshot)
         cache.saveSnapshot(merged, source)
         cache.mergeRaw(raw)
+        val known = cache.learnedPorts()
+        val learned = PortLayout.learn(known, merged)
+        if (learned != known) cache.saveLearnedPorts(learned)
         EventDispatcher.process(app, merged)
         return merged
     }
@@ -87,10 +130,11 @@ class StationRepository(context: Context) {
                     note = "format=${result.format}; kinds=${result.kinds.joinToString { "${it.first}/${it.second}" }}",
                 )
             } else {
-                FetchResult.Failed(
-                    if (result.values.isEmpty()) "no data from the station in 15 s (is it online?)"
-                    else "unknown payload (${result.values.size} keys, ${result.format})",
-                )
+                if (result.values.isEmpty()) {
+                    FetchResult.Failed("no data from the station in 15 s (is it online?)", kind = FailureKind.STATION_SILENT)
+                } else {
+                    FetchResult.Failed("unknown payload (${result.values.size} keys, ${result.format})")
+                }
             }
         } catch (e: CancellationException) {
             throw e
@@ -98,9 +142,12 @@ class StationRepository(context: Context) {
             if (!forceLogin && settings.appSession != null) fetchApp(account, forceLogin = true, persistSession = persistSession)
             else FetchResult.Failed("login: ${e.message}", authProblem = true)
         } catch (e: Exception) {
-            FetchResult.Failed(e.message ?: e.javaClass.simpleName)
+            FetchResult.Failed(e.message ?: e.javaClass.simpleName, kind = classify(e))
         }
     }
+
+    private fun classify(e: Throwable): FailureKind =
+        if (!Net.isOnline(app) || Net.isNetworkError(e)) FailureKind.NETWORK else FailureKind.OTHER
 
     suspend fun sessionFor(account: AccountCredentials, forceLogin: Boolean = false, persist: Boolean = true): AppSession {
         val cached = settings.appSession
@@ -127,7 +174,10 @@ class StationRepository(context: Context) {
             try {
                 val raw = api.quotaAll()
                 val snapshot = QuotaMapper.map(raw, now)
-                if (snapshot.socPercent != null) return FetchResult.Ok(snapshot, DataSource.REST, raw)
+                if (snapshot.socPercent != null) {
+                    detectModel(api, creds.serialNumber)
+                    return FetchResult.Ok(snapshot, DataSource.REST, raw)
+                }
                 restNote = "REST: no battery level among ${raw.size} keys"
             } catch (e: CancellationException) {
                 throw e
@@ -146,24 +196,44 @@ class StationRepository(context: Context) {
             val raw = OpenMqttSnapshot(cert, settings.mqttClientId, creds.serialNumber).collect()
             val snapshot = QuotaMapper.map(raw, System.currentTimeMillis())
             if (snapshot.hasAnyData) {
+                detectModel(api, creds.serialNumber)
                 FetchResult.Ok(snapshot, DataSource.OPEN_MQTT, raw, restNote)
-            } else {
+            } else if (raw.isEmpty()) {
+                // The cloud knows whether the station is connected: ask before blaming it.
+                val device = runCatching { api.deviceList().firstOrNull { it.sn == creds.serialNumber } }.getOrNull()
+                device?.let { rememberModel(it.productName) }
                 FetchResult.Failed(
-                    "$restNote; MQTT: " + if (raw.isEmpty()) "no messages in 20 s (is the station online?)"
-                    else "no known keys among ${raw.size}",
+                    "$restNote; MQTT: no messages in 20 s" + if (device?.online == false) " (cloud: station offline)" else "",
+                    kind = if (device?.online == false) FailureKind.STATION_OFFLINE else FailureKind.STATION_SILENT,
                 )
+            } else {
+                FetchResult.Failed("$restNote; MQTT: no known keys among ${raw.size}")
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            FetchResult.Failed("$restNote; MQTT: ${e.message ?: e.javaClass.simpleName}")
+            FetchResult.Failed("$restNote; MQTT: ${e.message ?: e.javaClass.simpleName}", kind = classify(e))
         }
+    }
+
+    /** Asks the cloud for the product name at most once a day until a known model is found. */
+    private suspend fun detectModel(api: EcoFlowOpenApi, serialNumber: String) {
+        val now = System.currentTimeMillis()
+        if (settings.detectedModelId != null || now - settings.modelProbeAtMs < MODEL_PROBE_EVERY_MS) return
+        settings.modelProbeAtMs = now
+        runCatching { api.deviceList().firstOrNull { it.sn == serialNumber } }.getOrNull()
+            ?.let { rememberModel(it.productName) }
+    }
+
+    fun rememberModel(productName: String?) {
+        StationModels.match(productName)?.let { settings.detectedModelId = it.id }
     }
 
     companion object {
         const val NO_CREDENTIALS = "no_credentials"
         private const val REST_BACKOFF_MS = 12 * 60 * 60_000L
         private const val SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60_000L
+        private const val MODEL_PROBE_EVERY_MS = 24 * 60 * 60_000L
     }
 }
 
@@ -222,6 +292,15 @@ class SnapshotCache(context: Context) {
         val out = LinkedHashMap<String, String>()
         o.keys().forEach { out[it] = o.optString(it) }
         return out
+    }
+
+    /** Ports that have drawn power at least once (see [PortLayout.learn]). */
+    fun learnedPorts(): Set<Port> =
+        prefs.getStringSet("learned_ports", emptySet()).orEmpty()
+            .mapNotNull { runCatching { Port.valueOf(it) }.getOrNull() }.toSet()
+
+    fun saveLearnedPorts(ports: Set<Port>) {
+        prefs.edit().putStringSet("learned_ports", ports.map { it.name }.toSet()).apply()
     }
 
     fun clear() = prefs.edit().clear().apply()
@@ -305,6 +384,56 @@ class EventStateStore(context: Context) {
         s.charging?.let { o.put("charging", it) }
         s.grid?.let { o.put("grid", it) }
         prefs.edit().putString("state", o.toString()).apply()
+    }
+
+    fun reset() = prefs.edit().clear().apply()
+}
+
+/**
+ * Runs [LinkDetector] on every attempt to reach the station and posts the "isn't responding" /
+ * "back online" notifications.
+ */
+object LinkDispatcher {
+    private val lock = Any()
+
+    fun process(context: Context, check: LinkCheck): LinkState {
+        val event: LinkEvent?
+        val next: LinkState
+        synchronized(lock) {
+            val store = LinkStore(context)
+            val prev = store.load()
+            val (n, e) = LinkDetector.process(prev, check)
+            next = n
+            event = e
+            // Live mode reports data every few seconds; only persist when something meaningful changed.
+            val seenMoved = (n.lastSeenMs ?: 0L) - (prev.lastSeenMs ?: 0L) >= 60_000L || (prev.lastSeenMs == null && n.lastSeenMs != null)
+            if (e != null || n.down != prev.down || n.silentChecks != prev.silentChecks || n.lastSoc != prev.lastSoc || seenMoved) {
+                store.save(n)
+            }
+        }
+        if (event != null) ua.ecowi.notify.Notifier.postLink(context, event)
+        return next
+    }
+}
+
+/** Persists [LinkState] (prefs "ecowi_link"). */
+class LinkStore(context: Context) {
+    private val prefs = context.applicationContext.getSharedPreferences("ecowi_link", Context.MODE_PRIVATE)
+
+    fun load(): LinkState = LinkState(
+        down = prefs.getBoolean("down", false),
+        silentChecks = prefs.getInt("silent", 0),
+        lastSeenMs = prefs.getLong("seen", -1L).takeIf { it >= 0 },
+        lastSoc = prefs.getInt("soc", -1).takeIf { it >= 0 },
+    )
+
+    fun save(s: LinkState) {
+        prefs.edit()
+            .putBoolean("down", s.down)
+            .putInt("silent", s.silentChecks)
+            .putLong("seen", s.lastSeenMs ?: -1L)
+            .putInt("soc", s.lastSoc ?: -1)
+            .apply()
     }
 
     fun reset() = prefs.edit().clear().apply()
