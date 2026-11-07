@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Keeps the workflow actions on current majors.
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/android-setup
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci

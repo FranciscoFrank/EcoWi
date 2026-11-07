@@ -13,3 +13,11 @@
 # Python (tools/)
 __pycache__/
 *.pyc
+
+# Signing keys never belong in git
+*.jks
+*.keystore
+keystore.properties
+
+# GitHub Pages build output (python tools/site/build.py)
+/_site/

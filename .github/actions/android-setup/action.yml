@@ -1,0 +1,26 @@
+name: Android build setup
+description: >
+  JDK 25 (the Gradle daemon toolchain in gradle/gradle-daemon-jvm.properties),
+  the Android SDK platform from compileSdk and Gradle with open-source caching.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v6
+      with:
+        distribution: temurin
+        java-version: "25"
+
+    # The runner image ships the SDK with accepted licenses but not always the newest platform.
+    # Keep the package in step with compileSdk in app/build.gradle.kts.
+    - name: Install Android SDK platform 37
+      shell: bash
+      run: |
+        (yes || true) | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-37.0" > /dev/null
+
+    # cache-provider: basic is the MIT-licensed cache (actions/cache). The default "enhanced"
+    # provider is proprietary and accepting its terms is a choice this repository doesn't make for you.
+    # setup-gradle also validates gradle-wrapper.jar against the known checksums.
+    - uses: gradle/actions/setup-gradle@v6
+      with:
+        cache-provider: basic

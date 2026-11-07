@@ -1,0 +1,91 @@
+name: Release
+
+# Push a tag like v1.2.0 (or v1.3.0-beta.1 for a pre-release) to build a signed APK and
+# publish it as a GitHub release. Signing secrets are described in CONTRIBUTING.md#releasing.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Version from the tag
+        id: version
+        run: |
+          tag="$GITHUB_REF_NAME"
+          name="${tag#v}"
+          if [[ ! "$name" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag $tag isn't vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-suffix"
+            exit 1
+          fi
+          major=${BASH_REMATCH[1]} minor=${BASH_REMATCH[2]} patch=${BASH_REMATCH[3]}
+          if (( minor > 99 || patch > 99 )); then
+            echo "::error::Minor and patch must stay below 100 (versionCode = major*10000 + minor*100 + patch)"
+            exit 1
+          fi
+          {
+            echo "name=$name"
+            echo "code=$(( major * 10000 + minor * 100 + patch ))"
+            echo "prerelease=$([[ -n "${BASH_REMATCH[4]}" ]] && echo true || echo false)"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/android-setup
+
+      - name: Release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+            echo "ECOWI_KEYSTORE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          else
+            echo "::warning::KEYSTORE_BASE64 isn't set, so this APK is signed with a one-off debug key and can't update a previous release in place. See CONTRIBUTING.md#releasing."
+          fi
+
+      - name: Unit tests and release APK
+        env:
+          ECOWI_VERSION_NAME: ${{ steps.version.outputs.name }}
+          ECOWI_VERSION_CODE: ${{ steps.version.outputs.code }}
+          ECOWI_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ECOWI_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          ECOWI_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew testReleaseUnitTest assembleRelease
+
+      - name: Collect the APK
+        env:
+          NAME: ${{ steps.version.outputs.name }}
+        run: |
+          mkdir dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/EcoWi-$NAME.apk"
+          (cd dist && sha256sum -- *.apk > SHA256SUMS.txt)
+          # Release notes: the matching CHANGELOG.md section, else GitHub's generated notes.
+          awk -v v="$NAME" '
+            $0 ~ "^## \\[" v "\\]" { on = 1; next }
+            on && /^## \[/ { exit }
+            on && /^\[[^]]+\]: / { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          cat dist/SHA256SUMS.txt
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.version.outputs.name }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        run: |
+          args=(--title "EcoWi $NAME" --verify-tag)
+          if [ -s notes.md ]; then args+=(--notes-file notes.md); else args+=(--generate-notes); fi
+          if [ "$PRERELEASE" = true ]; then args+=(--prerelease); fi
+          gh release create "$GITHUB_REF_NAME" dist/* "${args[@]}"

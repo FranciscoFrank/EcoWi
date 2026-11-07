@@ -3,6 +3,20 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Release signing and version come from the environment (GitHub Actions, see
+// .github/workflows/release.yml) or from ~/.gradle/gradle.properties for local builds:
+//   ECOWI_KEYSTORE          / ecowi.keystore           path to the .jks file
+//   ECOWI_KEYSTORE_PASSWORD / ecowi.keystore.password
+//   ECOWI_KEY_ALIAS         / ecowi.key.alias
+//   ECOWI_KEY_PASSWORD      / ecowi.key.password
+//   ECOWI_VERSION_NAME, ECOWI_VERSION_CODE              set from the git tag on release
+// Without a keystore the release build is signed with the debug key, so it still installs.
+fun setting(env: String, property: String? = null): String? =
+    (providers.environmentVariable(env).orNull ?: property?.let { providers.gradleProperty(it).orNull })
+        ?.takeIf { it.isNotBlank() }
+
+val releaseKeystore: File? = setting("ECOWI_KEYSTORE", "ecowi.keystore")?.let { file(it) }?.takeIf { it.isFile }
+
 android {
     namespace = "ua.ecowi"
     compileSdk = 37
@@ -13,16 +27,27 @@ android {
         // need Android 12+ and fall back gracefully below; Live Updates (Now Bar) need Android 16.
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = setting("ECOWI_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = setting("ECOWI_VERSION_NAME") ?: "1.0"
+    }
+
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = setting("ECOWI_KEYSTORE_PASSWORD", "ecowi.keystore.password")
+                keyAlias = setting("ECOWI_KEY_ALIAS", "ecowi.key.alias")
+                keyPassword = setting("ECOWI_KEY_PASSWORD", "ecowi.key.password")
+            }
+        }
     }
 
     buildTypes {
         release {
-            // Personal app: keep it simple. If you enable R8, proguard-rules.pro already keeps Paho.
+            // Kept simple on purpose. If you enable R8, proguard-rules.pro already keeps Paho.
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
 
